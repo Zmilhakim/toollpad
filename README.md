@@ -13,6 +13,18 @@ site/        the web app: landing, board, launch form, dashboard
 brand/       logo, avatar, banner, OG image and the X profile kit
 ```
 
+## Where this came from
+
+Toollpad was built inside [Hood-asset](https://github.com/Zmilhakim/Hood-asset),
+alongside Hoodpad and CRATE, and moved here before anything was deployed. The
+history above the move is the real one — the seven commits in this repository are
+the seven it was written in.
+
+It moved because one repository feeding several Vercel projects means every push
+rebuilds all of them: seven builds for a change that touched one folder, which is
+how a day's deployment quota disappears without anything being wrong. One project
+per repository costs nothing and removes the whole class of problem.
+
 ## The shape of it
 
 | | |

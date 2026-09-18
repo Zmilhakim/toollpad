@@ -71,16 +71,11 @@ Live at **https://toollpad.fun**, from `main`.
 
 | | |
 | --- | --- |
-| Vercel project | `tollpad`, in `zmilhakim-4557` — named before the spelling was settled |
-| Root directory | `toollpad/site` |
+| Vercel project | `toollpad`, in `zmilhakim-4557` |
+| Root directory | `site` |
 | Production branch | `main` — every push deploys |
 | Domains | `toollpad.fun`, `www.toollpad.fun` |
 | Protection | Vercel Authentication on previews only; production is public |
-
-**The Vercel project's Root Directory has to say `toollpad/site`.** It was
-created against `tollpad/site`, and that path no longer exists — a build finds
-nothing there and fails, leaving the previous deployment serving. It is one field
-in Settings → Build & Deployment.
 
 What is still unset, on purpose: `NEXT_PUBLIC_FACTORY_ADDRESS`. There are no
 contracts on Robinhood Chain yet, so the live site says so on every page. Deploy
