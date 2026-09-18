@@ -1,7 +1,7 @@
 // Generates the two fresh keys this project needs — on YOUR machine, never on a
 // server.
 //
-//   cd tollpad/contracts && npm install && node new-wallets.mjs
+//   cd toollpad/contracts && npm install && node new-wallets.mjs
 //
 // The keys are printed once and written nowhere. Nothing here phones home and
 // nothing saves state; re-running gives completely new keys.
@@ -124,7 +124,7 @@ console.log("  These are shown once. They are not saved anywhere.");
 console.log("");
 console.log("  1. Put each private key in a password manager. Not a note, not a chat.");
 console.log("  2. Send them to nobody. Not to support, not to a teammate, not to an AI.");
-console.log("  3. Put the two ADDRESSES — never the keys — into tollpad.config.json:");
+console.log("  3. Put the two ADDRESSES — never the keys — into toollpad.config.json:");
 console.log("");
 console.log('       "treasury": "0x…",');
 console.log('       "deployer": "0x…"');

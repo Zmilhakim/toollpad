@@ -15,16 +15,16 @@ import { createWalletClient, formatEther, http, parseEventLogs } from "viem";
 import { configAddress, configNumber, configPrice, loadConfig } from "./lib/config.mjs";
 import { connect, fail, requireDeployerKey, requireEnv } from "./lib/env.mjs";
 import { readArtifact } from "./lib/artifacts.mjs";
-import { tollpadPoolKey } from "./lib/pool.mjs";
+import { toollpadPoolKey } from "./lib/pool.mjs";
 import { amountsInPosition, ethPerTokenFromSqrtPrice, launchRange, pricePerToken } from "./lib/ticks.mjs";
 
-const factoryArtifact = readArtifact("TollpadFactory");
+const factoryArtifact = readArtifact("ToollpadFactory");
 
 requireEnv(["DEPLOYER_KEY", "NAME", "SYMBOL"]);
 
 const config = loadConfig();
 const factory = configAddress(config, "deployed.factory", "FACTORY", {
-  what: "the Tollpad factory — run `npm run deploy` first",
+  what: "the Toollpad factory — run `npm run deploy` first",
 });
 const tickSpacing = configNumber(config, "launch.tickSpacing", "TICK_SPACING", 200);
 const floorEth = configPrice(config, "launch.floorEth", "FLOOR_ETH", {
@@ -36,7 +36,7 @@ const ceilEth = configPrice(config, "launch.ceilEth", "CEIL_ETH", {
 
 const account = requireDeployerKey();
 const { chain, publicClient } = await connect();
-if (chain.id !== config.chainId) fail(`tollpad.config.json says chain ${config.chainId}, not ${chain.id}`);
+if (chain.id !== config.chainId) fail(`toollpad.config.json says chain ${config.chainId}, not ${chain.id}`);
 
 const WHOLE_SUPPLY = 1_000_000_000n;
 const range = launchRange({
@@ -110,7 +110,7 @@ const notice = await publicClient.readContract({
   args: [launched.args.id],
 });
 
-const key = tollpadPoolKey({
+const key = toollpadPoolKey({
   token: notice.token,
   hook: await publicClient.readContract({ address: factory, abi: factoryArtifact.abi, functionName: "hook" }),
   tickSpacing: notice.tickSpacing,

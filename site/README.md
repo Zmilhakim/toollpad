@@ -1,4 +1,4 @@
-# Tollpad — the web app
+# Toollpad — the web app
 
 Next.js 15, wagmi and viem. Four routes, no database, no API: every figure on
 every page is read from the factory or straight out of the Uniswap v4 pool
@@ -67,14 +67,20 @@ far as a launchpad can honestly go.
 
 ## Deployed
 
-Live at **https://tollpad.vercel.app**, from `main`.
+Live at **https://toollpad.fun**, from `main`.
 
 | | |
 | --- | --- |
-| Vercel project | `tollpad`, in `zmilhakim-4557` |
-| Root directory | `tollpad/site` |
+| Vercel project | `tollpad`, in `zmilhakim-4557` — named before the spelling was settled |
+| Root directory | `toollpad/site` |
 | Production branch | `main` — every push deploys |
+| Domains | `toollpad.fun`, `www.toollpad.fun` |
 | Protection | Vercel Authentication on previews only; production is public |
+
+**The Vercel project's Root Directory has to say `toollpad/site`.** It was
+created against `tollpad/site`, and that path no longer exists — a build finds
+nothing there and fails, leaving the previous deployment serving. It is one field
+in Settings → Build & Deployment.
 
 What is still unset, on purpose: `NEXT_PUBLIC_FACTORY_ADDRESS`. There are no
 contracts on Robinhood Chain yet, so the live site says so on every page. Deploy
@@ -84,7 +90,6 @@ environment, and redeploy — the pages turn on with no code change.
 Set `NEXT_PUBLIC_RPC_URL` before this sees any real traffic. The default endpoint
 is Robinhood's public one and is rate-limited for wallets, not for a site.
 
-There is no custom domain. `SITE_URL` follows `VERCEL_PROJECT_PRODUCTION_URL` by
-itself, so the OG tags already point at `tollpad.vercel.app` and will follow a
-domain the moment one is attached — set `NEXT_PUBLIC_SITE_URL` only if it ever
-needs to differ from the production URL Vercel knows about.
+`SITE_URL` follows `VERCEL_PROJECT_PRODUCTION_URL`, which is the custom domain
+once one is attached — so the OG tags point at `toollpad.fun` by themselves. Set
+`NEXT_PUBLIC_SITE_URL` only if it ever needs to differ from that.

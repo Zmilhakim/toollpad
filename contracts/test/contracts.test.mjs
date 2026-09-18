@@ -27,7 +27,7 @@ import { launchRange } from "../lib/ticks.mjs";
 const out = join(dirname(fileURLToPath(import.meta.url)), "..", "out");
 const artifact = (name) => JSON.parse(readFileSync(join(out, `${name}.json`), "utf8"));
 
-const factoryArtifact = artifact("TollpadFactory");
+const factoryArtifact = artifact("ToollpadFactory");
 const hookArtifact = artifact("TollHook");
 const lockerArtifact = artifact("TollLocker");
 const tokenArtifact = artifact("TollToken");

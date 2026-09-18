@@ -1,4 +1,4 @@
-# Tollpad — brand kit
+# Toollpad — brand kit
 
 Everything here is generated. Edit the source, re-run, commit the output.
 
@@ -14,7 +14,7 @@ finds it).
 | File | Use |
 | --- | --- |
 | `logo-mark.svg` | The gate on its own |
-| `logo-wordmark.svg` | TOLLPAD, no mark |
+| `logo-wordmark.svg` | TOOLLPAD, no mark |
 | `logo-lockup.svg` | Mark + wordmark, for a light background |
 | `logo-lockup-dark.svg` | The same, for a dark one |
 | `logo-mark-{256,512,1024}.png` | Raster fallbacks |
@@ -43,7 +43,7 @@ A boom gate is the one object that means *you are paying to go through this*
 without a word written on it, and at sixteen pixels it is still a barrier —
 which is the only test a profile picture has to pass.
 
-`lib/marks.mjs` draws it, and every letter of TOLLPAD, as rectangles. A logo set
+`lib/marks.mjs` draws it, and every letter of TOOLLPAD, as rectangles. A logo set
 in a webfont breaks wherever that font is not loaded — an email signature, a
 print sheet, someone else's deck. These render anywhere an SVG renders, with no
 font to ship.

@@ -7,7 +7,7 @@ import { ROBINHOOD_CHAIN_ID } from "@/lib/chain";
 
 export const metadata: Metadata = {
   title: "How it works",
-  description: "The mechanism, the rate, and the things Tollpad does not promise.",
+  description: "The mechanism, the rate, and the things Toollpad does not promise.",
 };
 
 const QUESTIONS = [

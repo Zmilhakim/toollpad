@@ -1,7 +1,7 @@
 {
-  "name": "tollpad-contracts",
+  "name": "toollpad-contracts",
   "version": "1.0.0",
-  "description": "Tollpad: a launchpad whose pools charge one 5% toll, collected by a Uniswap v4 hook",
+  "description": "Toollpad: a launchpad whose pools charge one 5% toll, collected by a Uniswap v4 hook",
   "private": true,
   "type": "commonjs",
   "scripts": {

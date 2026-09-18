@@ -1,4 +1,4 @@
-# Tollpad
+# Toollpad
 
 A launchpad on **Uniswap v4** where the fee is the product.
 
@@ -35,12 +35,12 @@ Hoodpad is the same idea on **Uniswap v3**: a board anyone can post to, supply
 fixed, liquidity locked, and the poster keeps the pool's trading fees. CRATE is
 one token launched once on v4 with no hook at all.
 
-Tollpad is the third shape. It is on v4 *and* it has a hook, which is what makes
+Toollpad is the third shape. It is on v4 *and* it has a hook, which is what makes
 the fee a thing the launchpad sets rather than a thing the pool tier happens to
 be — one rate, charged on the way in, split on a schedule nobody can edit
 afterwards.
 
-| | Hoodpad | CRATE | Tollpad |
+| | Hoodpad | CRATE | Toollpad |
 | --- | --- | --- | --- |
 | Venue | Uniswap v3 | Uniswap v4 | Uniswap v4 |
 | Hook | — | none, on purpose | the toll, 5% |
@@ -73,6 +73,6 @@ the chain and refuses to go on if it is not the one that was asked for. It shoul
 be a hardware wallet address rather than a generated key: it never signs anything
 except `withdraw`.
 
-> Not audited, and not deployed. `tollpad.config.json` has no addresses under
+> Not audited, and not deployed. `toollpad.config.json` has no addresses under
 > `deployed` because there is nothing there yet, and the scripts read that state
 > honestly rather than filling it with placeholders.

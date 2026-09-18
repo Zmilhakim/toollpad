@@ -1,4 +1,4 @@
-// Renders the Tollpad brand kit.
+// Renders the Toollpad brand kit.
 //
 //   node render.mjs
 //
@@ -55,8 +55,8 @@ function constantFrom(file, name) {
 
 const TOLL_BPS = Number(constantFrom("TollHook.sol", "TOLL_BPS"));
 const CREATOR_BPS = Number(constantFrom("TollHook.sol", "CREATOR_BPS"));
-const SUPPLY = constantFrom("TollpadFactory.sol", "FIXED_SUPPLY");
-const LP_FEE = Number(constantFrom("TollpadFactory.sol", "LP_FEE"));
+const SUPPLY = constantFrom("ToollpadFactory.sol", "FIXED_SUPPLY");
+const LP_FEE = Number(constantFrom("ToollpadFactory.sol", "LP_FEE"));
 
 const RATE = {
   toll: `${TOLL_BPS / 100}%`,

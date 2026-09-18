@@ -32,7 +32,7 @@ const deployer = configAddress(config, "deployer", "DEPLOYER", {
 
 const { publicClient } = await connect();
 if (publicClient.chain.id !== config.chainId) {
-  fail(`tollpad.config.json says chain ${config.chainId}, not ${publicClient.chain.id}`);
+  fail(`toollpad.config.json says chain ${config.chainId}, not ${publicClient.chain.id}`);
 }
 
 // The nonce is read rather than assumed: it is the one input to this that

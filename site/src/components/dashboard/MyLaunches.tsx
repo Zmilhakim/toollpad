@@ -7,12 +7,12 @@ import { LaunchCard } from "@/components/board/LaunchCard";
 import { TollLedger } from "./TollLedger";
 import { buttonClasses } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { useNoticesOf, usePoolStates, useTollpad } from "@/lib/board";
+import { useNoticesOf, usePoolStates, useToollpad } from "@/lib/board";
 import { BOARD_IS_OPEN } from "@/lib/contracts";
 
 export function MyLaunches() {
   const { address, isConnected } = useConnection();
-  const { hook } = useTollpad();
+  const { hook } = useToollpad();
   const { notices, isLoading } = useNoticesOf(address);
   const { states } = usePoolStates(notices, hook);
 

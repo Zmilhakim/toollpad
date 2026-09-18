@@ -1,7 +1,7 @@
-// Puts the Tollpad factory on Robinhood Chain. This launches no tokens — it
+// Puts the Toollpad factory on Robinhood Chain. This launches no tokens — it
 // deploys the board, the toll hook and the locker, and `launch.mjs` posts to it.
 //
-//   DEPLOYER_KEY=0x…    the key for the address tollpad.config.json names
+//   DEPLOYER_KEY=0x…    the key for the address toollpad.config.json names
 //   RPC_URL=https://…   defaults to Robinhood's own public endpoint
 //
 // POOL_MANAGER and TREASURY still work as one-off overrides of the file.
@@ -12,7 +12,7 @@ import { checkPoolManager, connect, fail, requireDeployerKey, requireEnv } from 
 import { flagsOf, hasFlags, hookInitCode, mineHookSalt, predictFactory } from "./lib/hooks.mjs";
 import { readArtifact } from "./lib/artifacts.mjs";
 
-const factoryArtifact = readArtifact("TollpadFactory");
+const factoryArtifact = readArtifact("ToollpadFactory");
 const hookArtifact = readArtifact("TollHook");
 
 requireEnv(["DEPLOYER_KEY"]);
@@ -35,7 +35,7 @@ const account = requireDeployerKey();
 // deployment reverts — which is the good outcome, but a slow way to find out.
 if (account.address.toLowerCase() !== intendedDeployer.toLowerCase()) {
   fail(
-    `tollpad.config.json expects to deploy from ${intendedDeployer}`,
+    `toollpad.config.json expects to deploy from ${intendedDeployer}`,
     `but DEPLOYER_KEY controls ${account.address}.`,
     "",
     "Load the other key, or change the deployer in the config if this is the one",
@@ -44,7 +44,7 @@ if (account.address.toLowerCase() !== intendedDeployer.toLowerCase()) {
 }
 
 const { chain, publicClient } = await connect();
-if (chain.id !== config.chainId) fail(`tollpad.config.json says chain ${config.chainId}, not ${chain.id}`);
+if (chain.id !== config.chainId) fail(`toollpad.config.json says chain ${config.chainId}, not ${chain.id}`);
 
 await checkPoolManager(publicClient, poolManager);
 

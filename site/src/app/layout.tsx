@@ -21,18 +21,18 @@ const description =
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: "Tollpad — every swap pays a toll", template: "%s · Tollpad" },
+  title: { default: "Toollpad — every swap pays a toll", template: "%s · Toollpad" },
   description,
   openGraph: {
     type: "website",
-    siteName: "Tollpad",
-    title: "Tollpad — every swap pays a toll",
+    siteName: "Toollpad",
+    title: "Toollpad — every swap pays a toll",
     description,
-    images: [{ url: "/brand/og-1200x630.png", width: 1200, height: 630, alt: "Tollpad" }],
+    images: [{ url: "/brand/og-1200x630.png", width: 1200, height: 630, alt: "Toollpad" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tollpad — every swap pays a toll",
+    title: "Toollpad — every swap pays a toll",
     description,
     images: ["/brand/og-1200x630.png"],
   },

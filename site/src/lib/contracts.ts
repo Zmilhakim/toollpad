@@ -1,12 +1,12 @@
 import type { Address } from "viem";
 import { isAddress } from "viem";
 
-import { tollpadFactoryAbi } from "./abi/tollpadFactory";
+import { toollpadFactoryAbi } from "./abi/toollpadFactory";
 import { tollHookAbi } from "./abi/tollHook";
 import { tollLockerAbi } from "./abi/tollLocker";
 import { tollTokenAbi } from "./abi/tollToken";
 
-export { tollpadFactoryAbi, tollHookAbi, tollLockerAbi, tollTokenAbi };
+export { toollpadFactoryAbi, tollHookAbi, tollLockerAbi, tollTokenAbi };
 
 /**
  * The factory, once there is one.
@@ -41,7 +41,7 @@ export const NATIVE = "0x0000000000000000000000000000000000000000" as Address;
  *
  * They are not settings and the site never reads them from a form: `TOLL_BPS`
  * and `CREATOR_BPS` are constants in TollHook, `FIXED_SUPPLY` and `LP_FEE` are
- * constants in TollpadFactory. Where a page shows them next to live data it
+ * constants in ToollpadFactory. Where a page shows them next to live data it
  * reads `boardStats()` instead, so a mismatch shows up rather than hiding.
  */
 export const TOLL_BPS = 500;

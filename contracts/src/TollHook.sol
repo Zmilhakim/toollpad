@@ -17,13 +17,13 @@ import {PoolKey} from "@uniswap/v4-core/src/types/PoolKey.sol";
 import {ModifyLiquidityParams, SwapParams} from "@uniswap/v4-core/src/types/PoolOperation.sol";
 
 /// @title TollHook
-/// @notice The toll gate. One hook, every Tollpad pool, one rate: **5% of
+/// @notice The toll gate. One hook, every Toollpad pool, one rate: **5% of
 /// everything paid into the pool**, in either direction. Buy with ETH and the
 /// toll is 5% of the ETH. Sell the token back and it is 5% of the token. The
 /// split is fixed here and cannot be changed: 80% to whoever launched that
 /// token, 20% to the treasury.
 ///
-/// There is no other fee. Tollpad pools are opened with an LP fee of zero, so
+/// There is no other fee. Toollpad pools are opened with an LP fee of zero, so
 /// the toll is the entire fee schedule — nothing accrues to a position nobody
 /// can withdraw from, and there is no second number to read.
 ///
@@ -72,7 +72,7 @@ contract TollHook is IHooks, IUnlockCallback {
     /// @notice Basis points, for the two rates below.
     uint256 public constant BPS = 10_000;
 
-    /// @notice The toll: 5% of everything paid into a Tollpad pool.
+    /// @notice The toll: 5% of everything paid into a Toollpad pool.
     uint256 public constant TOLL_BPS = 500;
 
     /// @notice The creator's share of the toll. The treasury gets the rest.
@@ -129,7 +129,7 @@ contract TollHook is IHooks, IUnlockCallback {
         _;
     }
 
-    /// @param poolManager_ The Uniswap v4 pool manager every Tollpad pool lives in.
+    /// @param poolManager_ The Uniswap v4 pool manager every Toollpad pool lives in.
     /// @param treasury_ Where the treasury's share of every toll goes, forever.
     /// @dev Deployed with CREATE2 by the factory, from a salt mined off-chain so
     /// that the address carries `REQUIRED_FLAGS`. The check below is what makes
@@ -165,7 +165,7 @@ contract TollHook is IHooks, IUnlockCallback {
 
     /// @inheritdoc IHooks
     /// @dev Two guarantees in four lines. Only the factory can open a pool with
-    /// this hook in its key, so nobody can point the toll at a pool Tollpad did
+    /// this hook in its key, so nobody can point the toll at a pool Toollpad did
     /// not launch — and every pool that exists has a creator on file, so a toll
     /// can never be collected with nowhere to send it.
     function beforeInitialize(address sender, PoolKey calldata key, uint160)

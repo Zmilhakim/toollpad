@@ -1,4 +1,4 @@
-# Tollpad — contracts
+# Toollpad — contracts
 
 Four contracts on **Uniswap v4**, compiled with solc-js and tested on a local EVM
 against Uniswap's own `PoolManager`, deployed as it ships. No Hardhat, no
@@ -6,7 +6,7 @@ Foundry, no network access needed to run the tests.
 
 | Contract | Job |
 | --- | --- |
-| `TollpadFactory` | The board. Launches a token, opens its pool, locks the supply in — one transaction. |
+| `ToollpadFactory` | The board. Launches a token, opens its pool, locks the supply in — one transaction. |
 | `TollHook` | The toll gate. 5% of every swap, 80% to the creator, 20% to the treasury. |
 | `TollLocker` | Holds every launch's liquidity, and has no function that gives any back. |
 | `TollToken` | Fixed-supply ERC20. No mint, no owner, no pause. |
@@ -118,7 +118,7 @@ BEFORE_INITIALIZE | BEFORE_SWAP | AFTER_SWAP
 ```
 
 `BEFORE_INITIALIZE` is there for a second reason: it is how only the factory can
-open a pool with this hook in it. Nobody can point the toll at a pool Tollpad did
+open a pool with this hook in it. Nobody can point the toll at a pool Toollpad did
 not launch, and no pool can exist with a toll and nowhere to send it.
 
 ## Two promises, and they are not the same one
@@ -178,7 +178,7 @@ DEPLOYER_KEY=0x… npm run whoami     # prints the address, never the key
 
 ## The launch, written down
 
-Everything public lives in `tollpad.config.json`, and every script reads it from
+Everything public lives in `toollpad.config.json`, and every script reads it from
 there:
 
 ```json
@@ -256,7 +256,7 @@ storage.
 
 ## Not deployed, and not audited
 
-`tollpad.config.json` has no addresses under `deployed` because nothing has been
+`toollpad.config.json` has no addresses under `deployed` because nothing has been
 deployed. None of this is audited. What the scripts do instead is check what can
 be checked before spending gas: that the RPC really is the chain the config
 names, that the pool manager answers like one, that the key signing is the

@@ -17,14 +17,14 @@ import { getAddress, isAddress } from "viem";
 
 import { fail } from "./env.mjs";
 
-const CONFIG_PATH = join(dirname(dirname(fileURLToPath(import.meta.url))), "tollpad.config.json");
+const CONFIG_PATH = join(dirname(dirname(fileURLToPath(import.meta.url))), "toollpad.config.json");
 
 export function loadConfig() {
   let raw;
   try {
     raw = JSON.parse(readFileSync(CONFIG_PATH, "utf8"));
   } catch (error) {
-    fail(`cannot read tollpad.config.json: ${error.message}`);
+    fail(`cannot read toollpad.config.json: ${error.message}`);
   }
 
   refuseSecrets(raw, "");
@@ -42,7 +42,7 @@ function refuseSecrets(node, path) {
   if (typeof node === "string") {
     if (/^0x[0-9a-fA-F]{64}$/.test(node.trim())) {
       fail(
-        `${path || "a value"} in tollpad.config.json looks like a private key.`,
+        `${path || "a value"} in toollpad.config.json looks like a private key.`,
         "",
         "This file is committed to the repository. If that is a real key, treat it",
         "as public from now on: move the funds, and never use it again.",
@@ -76,7 +76,7 @@ export function configAddress(config, path, envName, { what }) {
 
   if (value === "") {
     fail(
-      `${path} is not set in tollpad.config.json — ${what}`,
+      `${path} is not set in toollpad.config.json — ${what}`,
       "",
       `Put the address in the file, or pass it once as ${envName}=0x…`,
     );
@@ -104,7 +104,7 @@ export function configAddress(config, path, envName, { what }) {
 /** A decimal price string the config must supply. */
 export function configPrice(config, path, envName, { what }) {
   const value = (process.env[envName] ?? at(config, path) ?? "").toString().trim();
-  if (value === "") fail(`${path} is not set in tollpad.config.json — ${what}`);
+  if (value === "") fail(`${path} is not set in toollpad.config.json — ${what}`);
   return value;
 }
 
@@ -119,5 +119,5 @@ export function configNumber(config, path, envName, fallback) {
 export function recordDeployed(config, values) {
   config.deployed = { ...config.deployed, ...values };
   saveConfig(config);
-  console.log(`\nwritten to tollpad.config.json: ${Object.keys(values).join(", ")}`);
+  console.log(`\nwritten to toollpad.config.json: ${Object.keys(values).join(", ")}`);
 }

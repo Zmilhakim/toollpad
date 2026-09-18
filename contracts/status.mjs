@@ -13,15 +13,15 @@ import { formatEther } from "viem";
 import { configAddress, loadConfig } from "./lib/config.mjs";
 import { connect, fail } from "./lib/env.mjs";
 import { readArtifact } from "./lib/artifacts.mjs";
-import { readSlot0, tollpadPoolKey, poolId } from "./lib/pool.mjs";
+import { readSlot0, toollpadPoolKey, poolId } from "./lib/pool.mjs";
 import { amountsInPosition, ethPerTokenFromSqrtPrice } from "./lib/ticks.mjs";
 
-const factoryArtifact = readArtifact("TollpadFactory");
+const factoryArtifact = readArtifact("ToollpadFactory");
 const hookArtifact = readArtifact("TollHook");
 
 const config = loadConfig();
 const factory = configAddress(config, "deployed.factory", "FACTORY", {
-  what: "the Tollpad factory — run `npm run deploy` first",
+  what: "the Toollpad factory — run `npm run deploy` first",
 });
 const poolManager = configAddress(config, "poolManager", "POOL_MANAGER", {
   what: "the Uniswap v4 PoolManager the launchpad opens pools in",
@@ -29,7 +29,7 @@ const poolManager = configAddress(config, "poolManager", "POOL_MANAGER", {
 
 const { publicClient } = await connect();
 if (publicClient.chain.id !== config.chainId) {
-  fail(`tollpad.config.json says chain ${config.chainId}, not ${publicClient.chain.id}`);
+  fail(`toollpad.config.json says chain ${config.chainId}, not ${publicClient.chain.id}`);
 }
 
 const read = (functionName, args = []) =>
@@ -49,7 +49,7 @@ console.log(`last       ${lastLaunch === 0n ? "nothing launched yet" : new Date(
 const page = await read("latest", [0n, 20n]);
 
 for (const notice of page) {
-  const key = tollpadPoolKey({ token: notice.token, hook, tickSpacing: notice.tickSpacing });
+  const key = toollpadPoolKey({ token: notice.token, hook, tickSpacing: notice.tickSpacing });
   const slot0 = await readSlot0(publicClient, poolManager, poolId(key));
 
   console.log(`\n#${notice.id}  ${notice.name} ($${notice.symbol})`);

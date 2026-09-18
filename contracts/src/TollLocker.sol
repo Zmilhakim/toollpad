@@ -17,7 +17,7 @@ import {LiquidityAmounts} from "@uniswap/v4-periphery/src/libraries/LiquidityAmo
 import {TollToken} from "./TollToken.sol";
 
 /// @title TollLocker
-/// @notice Holds the liquidity of every token launched through Tollpad, and has
+/// @notice Holds the liquidity of every token launched through Toollpad, and has
 /// no way to give any of it back.
 ///
 /// The whole surface is two functions: one the factory calls once per launch to
@@ -36,7 +36,7 @@ import {TollToken} from "./TollToken.sol";
 /// can never reach each other's liquidity, and a launch costs one contract
 /// deployment less.
 ///
-/// There is nothing to collect here either. Tollpad pools are opened with an LP
+/// There is nothing to collect here either. Toollpad pools are opened with an LP
 /// fee of zero — the 5% toll in `TollHook` is the entire fee schedule — so this
 /// contract never accrues fees that would then need a way out.
 contract TollLocker is IUnlockCallback {
@@ -105,7 +105,7 @@ contract TollLocker is IUnlockCallback {
 
         (PoolKey memory key, int24 tickLower, int24 tickUpper) = abi.decode(data, (PoolKey, int24, int24));
 
-        // The token is currency1 in every Tollpad pool: the other side is native
+        // The token is currency1 in every Toollpad pool: the other side is native
         // ETH, which is address(0) and therefore always the lower currency.
         uint256 supply = IERC20(Currency.unwrap(key.currency1)).balanceOf(address(this));
         (uint160 sqrtPriceX96,,,) = poolManager.getSlot0(key.toId());

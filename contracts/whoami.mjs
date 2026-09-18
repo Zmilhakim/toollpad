@@ -43,7 +43,7 @@ if (factory === "") {
   process.exit(0);
 }
 
-const factoryArtifact = readArtifact("TollpadFactory");
+const factoryArtifact = readArtifact("ToollpadFactory");
 const hookArtifact = readArtifact("TollHook");
 
 const hook = await publicClient.readContract({

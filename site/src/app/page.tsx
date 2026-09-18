@@ -46,7 +46,7 @@ export default function Home() {
               Every swap pays a toll
             </h1>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-lane-soft sm:text-base">
-              Tollpad is a launchpad where the fee is the product. The supply goes into the pool, the pool is locked,
+              Toollpad is a launchpad where the fee is the product. The supply goes into the pool, the pool is locked,
               and from the first trade onwards every swap pays <strong className="text-lane">5%</strong> —{" "}
               <strong className="text-lane">80% of it</strong> to whoever launched the token.
             </p>

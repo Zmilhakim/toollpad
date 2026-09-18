@@ -1,4 +1,4 @@
-# Tollpad — X profile kit
+# Toollpad — X profile kit
 
 Everything needed to set the account up, in the fields X asks for. Character
 counts were measured, not estimated; X counts Unicode code points, and the em
@@ -9,25 +9,22 @@ dash counts as one.
 **Pick this** (15 characters):
 
 ```
-Tollpad | $TOLL
+Toollpad | $TOLL
 ```
 
-Alternatives: `Tollpad` (7) · `Tollpad — 5% toll, 80% yours` (28)
+Alternatives: `Toollpad` (7) · `Toollpad — 5% toll, 80% yours` (28)
 
 ## Handle
 
-Nothing here is registered yet, and this file will say so until it is. Check
-these in order and write down which one you took, with the date — a handle
-somebody else holds can be pointed at anything, and the only defence is that
-the real one is written somewhere people can check:
+**`@toollpad`** — registered 2026-09-18.
 
-1. `@tollpad`
-2. `@gettollpad`
-3. `@tollpad_xyz`
+Two o's. The name is spelled the same way everywhere it appears: the handle, the
+domain, the wordmark and the contracts. That is not a detail — a launchpad whose
+name and address disagree is the exact shape of the fake version of itself, and
+the disagreement is what a reader has no way to resolve.
 
-`@hoodpad` was taken when Hoodpad went looking, which is the ordinary outcome
-rather than the unlucky one. Assume the short one is gone and be glad if it is
-not.
+So: if a site, an account or a contract says **Tollpad** with one o, it is not
+this project.
 
 ## Bio — max 160
 
@@ -85,9 +82,17 @@ launchpad on its first day, which is the day the bio gets written.
 
 ## Website
 
-Leave it empty until there is a domain, and then put the domain there. Do not
-put a link to an explorer page in this field: it looks like a website, it is not
-one, and it goes stale the first time anything is redeployed.
+```
+https://toollpad.fun
+```
+
+Registered 2026-09-18, and attached to the Vercel project. `www.toollpad.fun`
+resolves to the same place.
+
+Do not put an explorer page in this field once the contracts are deployed. It
+looks like a website, it is not one, and it goes stale the first time anything is
+redeployed. The contract addresses belong on the site, where they can be read
+against the chain.
 
 ## Images
 

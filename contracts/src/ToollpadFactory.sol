@@ -12,8 +12,8 @@ import {TollHook} from "./TollHook.sol";
 import {TollLocker} from "./TollLocker.sol";
 import {TollToken} from "./TollToken.sol";
 
-/// @title TollpadFactory
-/// @notice The board. Every token launched through Tollpad is recorded here, and
+/// @title ToollpadFactory
+/// @notice The board. Every token launched through Toollpad is recorded here, and
 /// every figure the site prints is read back out of this contract or the pool
 /// manager — nothing is estimated off-chain.
 ///
@@ -45,7 +45,7 @@ import {TollToken} from "./TollToken.sol";
 /// across. That is the whole list. There is no allocation, no vesting schedule,
 /// no unlock cliff and no treasury carve-out, because there is nowhere to put
 /// one: the supply has exactly one destination and it is the pool.
-contract TollpadFactory {
+contract ToollpadFactory {
     using StateLibrary for IPoolManager;
 
     struct Notice {
@@ -81,7 +81,7 @@ contract TollpadFactory {
     /// parameter.
     uint256 public constant FIXED_SUPPLY = 1_000_000_000e18;
 
-    /// @notice Tollpad pools charge no LP fee. The 5% toll in `TollHook` is the
+    /// @notice Toollpad pools charge no LP fee. The 5% toll in `TollHook` is the
     /// entire fee schedule.
     uint24 public constant LP_FEE = 0;
 

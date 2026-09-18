@@ -1,13 +1,13 @@
-# Tollpad — posts
+# Toollpad — posts
 
 Copy for the account, with the image each one goes out with. Nothing here names
-an address: fill those in from `tollpad.config.json` after deploying, and check
+an address: fill those in from `toollpad.config.json` after deploying, and check
 each one against the chain before posting it. A contract address in a post is
 the one thing readers cannot verify by reading the post.
 
 ## The pinned one
 
-> Tollpad is a launchpad where the fee is the product.
+> Toollpad is a launchpad where the fee is the product.
 >
 > Launch a token: the whole supply goes into a Uniswap v4 pool, the pool is
 > locked, and every swap after that pays a 5% toll. 80% of it is yours.

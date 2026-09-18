@@ -16,7 +16,7 @@ export function DeploymentNotice() {
     <div className="mb-6 border-2 border-signal/50 bg-signal/10 px-4 py-3">
       <p className="text-sm text-lane">
         <span className="micro mr-2 font-semibold text-signal">Not deployed</span>
-        Tollpad has no contracts on Robinhood Chain yet, so there is nothing to read and nothing to launch. Everything
+        Toollpad has no contracts on Robinhood Chain yet, so there is nothing to read and nothing to launch. Everything
         below describes what the contracts in the repository do, not something that is live.
       </p>
       <p className="micro mt-2 text-lane-soft">

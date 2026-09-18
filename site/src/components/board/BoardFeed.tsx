@@ -2,11 +2,11 @@
 
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LaunchCard } from "./LaunchCard";
-import { useNotices, usePoolStates, useTollpad } from "@/lib/board";
+import { useNotices, usePoolStates, useToollpad } from "@/lib/board";
 import { BOARD_IS_OPEN } from "@/lib/contracts";
 
 export function BoardFeed() {
-  const { hook } = useTollpad();
+  const { hook } = useToollpad();
   const { notices, isLoading } = useNotices();
   const { states } = usePoolStates(notices, hook);
 

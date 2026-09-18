@@ -1,4 +1,4 @@
-// The Tollpad marks, drawn as pixels rather than set in a typeface.
+// The Toollpad marks, drawn as pixels rather than set in a typeface.
 //
 // The wordmark is deliberately not text: a logo that depends on a webfont breaks
 // the moment it is used somewhere the font is not loaded — an email, a print
@@ -74,7 +74,7 @@ function armStripes() {
 
 const STRIPES = armStripes();
 
-/** 7 x 9 glyphs with two-pixel strokes — only the letters TOLLPAD needs. */
+/** 7 x 9 glyphs with two-pixel strokes — only the letters TOOLLPAD needs. */
 const GLYPHS = {
   T: ["#######", "..##...", "..##...", "..##...", "..##...", "..##...", "..##...", "..##...", "..##..."],
   O: [".#####.", "##...##", "##...##", "##...##", "##...##", "##...##", "##...##", "##...##", ".#####."],
@@ -134,7 +134,7 @@ function wordGrid(text) {
   return letters;
 }
 
-export function wordmarkSvg({ text = "TOLLPAD", unit = 8, color = PALETTE.ink } = {}) {
+export function wordmarkSvg({ text = "TOOLLPAD", unit = 8, color = PALETTE.ink } = {}) {
   const letters = wordGrid(text);
   const pitch = GLYPH_WIDTH + LETTER_GAP;
   const width = letters.length * pitch - LETTER_GAP;
@@ -145,7 +145,7 @@ export function wordmarkSvg({ text = "TOLLPAD", unit = 8, color = PALETTE.ink } 
 
 /** Mark and wordmark side by side, the way a header uses them. */
 export function lockupSvg({ unit = 8, color = PALETTE.ink, disc = PALETTE.signal } = {}) {
-  const letters = wordGrid("TOLLPAD");
+  const letters = wordGrid("TOOLLPAD");
   const pitch = GLYPH_WIDTH + LETTER_GAP;
   const wordWidth = letters.length * pitch - LETTER_GAP;
   const mark = SIZE + 4;

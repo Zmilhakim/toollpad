@@ -29,7 +29,7 @@ export type PoolKey = {
 };
 
 /**
- * The pool a Tollpad launch opens: native ETH against the token, no LP fee, and
+ * The pool a Toollpad launch opens: native ETH against the token, no LP fee, and
  * the toll hook in the key.
  *
  * All three are properties of the pool rather than settings. `fee` is zero
@@ -37,7 +37,7 @@ export type PoolKey = {
  * so the rate a pool charges on its first day is the rate it charges forever,
  * and a pool with a different hook in it is simply a different pool.
  */
-export function tollpadPoolKey(token: Address, hook: Address, tickSpacing: number): PoolKey {
+export function toollpadPoolKey(token: Address, hook: Address, tickSpacing: number): PoolKey {
   return { currency0: NATIVE, currency1: token, fee: LP_FEE, tickSpacing, hooks: hook };
 }
 

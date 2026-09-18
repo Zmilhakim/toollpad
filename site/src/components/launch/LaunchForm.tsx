@@ -17,7 +17,7 @@ import {
   FACTORY_ADDRESS,
   LAUNCH_TICK_SPACING,
   SUPPLY,
-  tollpadFactoryAbi,
+  toollpadFactoryAbi,
   TOLL_BPS,
 } from "@/lib/contracts";
 import { launchRange, pricePerToken } from "@/lib/ticks";
@@ -83,7 +83,7 @@ export function LaunchForm() {
   const wrongChain = isConnected && chainId !== ROBINHOOD_CHAIN_ID;
 
   const blocker = !BOARD_IS_OPEN
-    ? "Tollpad is not deployed on Robinhood Chain yet."
+    ? "Toollpad is not deployed on Robinhood Chain yet."
     : !isConnected
       ? "Connect a wallet to launch."
       : wrongChain
@@ -99,7 +99,7 @@ export function LaunchForm() {
 
     writeContract({
       address: FACTORY_ADDRESS,
-      abi: tollpadFactoryAbi,
+      abi: toollpadFactoryAbi,
       functionName: "launch",
       chainId: ROBINHOOD_CHAIN_ID,
       args: [

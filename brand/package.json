@@ -1,8 +1,8 @@
 {
-  "name": "tollpad-brand",
+  "name": "toollpad-brand",
   "private": true,
   "type": "module",
-  "description": "Generates the Tollpad logo, avatar, banner, OG image and launch cards",
+  "description": "Generates the Toollpad logo, avatar, banner, OG image and launch cards",
   "scripts": {
     "render": "node render.mjs"
   },

@@ -70,7 +70,7 @@ export async function readSlot0(publicClient, poolManager, id) {
 }
 
 /**
- * The pool a Tollpad launch opens: native ETH against the token, no LP fee, and
+ * The pool a Toollpad launch opens: native ETH against the token, no LP fee, and
  * the toll hook in the key.
  *
  * All three are fixed properties of the pool rather than settings. `fee` is zero
@@ -78,7 +78,7 @@ export async function readSlot0(publicClient, poolManager, id) {
  * so the rate a pool charges on its first day is the rate it charges forever,
  * and a pool with a different hook in it is simply a different pool.
  */
-export function tollpadPoolKey({ token, hook, tickSpacing }) {
+export function toollpadPoolKey({ token, hook, tickSpacing }) {
   return {
     currency0: "0x0000000000000000000000000000000000000000",
     currency1: token,

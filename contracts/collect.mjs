@@ -12,7 +12,7 @@ import { configAddress, loadConfig } from "./lib/config.mjs";
 import { connect, fail, requireDeployerKey, requireEnv } from "./lib/env.mjs";
 import { readArtifact } from "./lib/artifacts.mjs";
 
-const factoryArtifact = readArtifact("TollpadFactory");
+const factoryArtifact = readArtifact("ToollpadFactory");
 const hookArtifact = readArtifact("TollHook");
 
 const NATIVE = "0x0000000000000000000000000000000000000000";
@@ -21,12 +21,12 @@ requireEnv(["DEPLOYER_KEY"]);
 
 const config = loadConfig();
 const factory = configAddress(config, "deployed.factory", "FACTORY", {
-  what: "the Tollpad factory — run `npm run deploy` first",
+  what: "the Toollpad factory — run `npm run deploy` first",
 });
 
 const account = requireDeployerKey();
 const { chain, publicClient } = await connect();
-if (chain.id !== config.chainId) fail(`tollpad.config.json says chain ${config.chainId}, not ${chain.id}`);
+if (chain.id !== config.chainId) fail(`toollpad.config.json says chain ${config.chainId}, not ${chain.id}`);
 
 const hook = await publicClient.readContract({ address: factory, abi: factoryArtifact.abi, functionName: "hook" });
 

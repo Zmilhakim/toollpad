@@ -6,7 +6,7 @@ import { DeploymentNotice } from "@/components/board/DeploymentNotice";
 
 export const metadata: Metadata = {
   title: "The board",
-  description: "Every token launched through Tollpad, read straight from the chain.",
+  description: "Every token launched through Toollpad, read straight from the chain.",
 };
 
 export default function BoardPage() {

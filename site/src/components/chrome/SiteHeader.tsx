@@ -14,9 +14,9 @@ export function SiteHeader() {
   return (
     <header className="border-b-2 border-signal/30 bg-ground-deep">
       <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-4 py-3">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5 text-ink" aria-label="Tollpad, home">
+        <Link href="/" className="flex shrink-0 items-center gap-2.5 text-ink" aria-label="Toollpad, home">
           <Mark size={30} />
-          <span className="font-display text-lg tracking-tight text-lane">TOLLPAD</span>
+          <span className="font-display text-lg tracking-tight text-lane">TOOLLPAD</span>
         </Link>
 
         <nav className="ml-auto hidden items-center gap-1 sm:flex">

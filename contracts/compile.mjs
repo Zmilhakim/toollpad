@@ -1,4 +1,4 @@
-// Compiles the Tollpad contracts with solc-js, along with Uniswap's own pool
+// Compiles the Toollpad contracts with solc-js, along with Uniswap's own pool
 // manager: the tests run against the real thing rather than a stand-in, so it
 // has to come out of the same compile.
 //
@@ -88,7 +88,7 @@ mkdirSync(outDir, { recursive: true });
 mkdirSync(abiDir, { recursive: true });
 
 const DEPLOYED = {
-  "TollpadFactory.sol": "TollpadFactory",
+  "ToollpadFactory.sol": "ToollpadFactory",
   "TollHook.sol": "TollHook",
   "TollLocker.sol": "TollLocker",
   "TollToken.sol": "TollToken",

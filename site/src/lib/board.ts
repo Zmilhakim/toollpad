@@ -5,13 +5,13 @@ import { useReadContract, useReadContracts } from "wagmi";
 import type { Address } from "viem";
 
 import { ROBINHOOD_CHAIN_ID } from "./chain";
-import { BOARD_IS_OPEN, FACTORY_ADDRESS, POOL_MANAGER, tollpadFactoryAbi, type Notice } from "./contracts";
-import { decodeSlot0, extsloadAbi, poolId, poolStateSlot, tollpadPoolKey, type Slot0 } from "./pool";
+import { BOARD_IS_OPEN, FACTORY_ADDRESS, POOL_MANAGER, toollpadFactoryAbi, type Notice } from "./contracts";
+import { decodeSlot0, extsloadAbi, poolId, poolStateSlot, toollpadPoolKey, type Slot0 } from "./pool";
 
-const read = { address: FACTORY_ADDRESS, abi: tollpadFactoryAbi, chainId: ROBINHOOD_CHAIN_ID } as const;
+const read = { address: FACTORY_ADDRESS, abi: toollpadFactoryAbi, chainId: ROBINHOOD_CHAIN_ID } as const;
 
 /** The two addresses every page needs: the hook that charges, the locker that holds. */
-export function useTollpad() {
+export function useToollpad() {
   const hook = useReadContract({ ...read, functionName: "hook", query: { enabled: BOARD_IS_OPEN } });
   const locker = useReadContract({ ...read, functionName: "locker", query: { enabled: BOARD_IS_OPEN } });
 
@@ -99,7 +99,7 @@ export function useNoticesOf(creator: Address | undefined) {
  */
 export function usePoolStates(notices: readonly Notice[], hook: Address | undefined) {
   const keys = useMemo(
-    () => (hook ? notices.map((notice) => tollpadPoolKey(notice.token, hook, notice.tickSpacing)) : []),
+    () => (hook ? notices.map((notice) => toollpadPoolKey(notice.token, hook, notice.tickSpacing)) : []),
     [notices, hook],
   );
 
