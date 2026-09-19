@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { BoardFeed } from "@/components/board/BoardFeed";
 import { BoardStats } from "@/components/board/BoardStats";
 import { DeploymentNotice } from "@/components/board/DeploymentNotice";
-import { WrittenTokens } from "@/components/board/WrittenTokens";
 
 export const metadata: Metadata = {
   title: "The board",
@@ -24,7 +23,6 @@ export default function BoardPage() {
       </header>
 
       <BoardStats />
-      <WrittenTokens />
       <BoardFeed />
     </div>
   );

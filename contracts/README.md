@@ -233,24 +233,40 @@ for ETH it does not have. `lib/ticks.mjs` is v4's `TickMath` transliterated
 rather than approximated, because a price one tick off the range edge is a launch
 the factory refuses.
 
-A launch can be written down before it is sent. `TOKEN=<slug>` reads
-`tokens/<slug>/token.json` — the name, the ticker, the picture, the sentence and
-both valuations — so the values that are permanent from the moment the
-transaction confirms are reviewed in a diff rather than typed at a prompt. See
-[`../tokens/README.md`](../tokens/README.md).
+A launch can be written down before it is sent. `TOKEN` is a path to a
+`token.json` — the name, the ticker, the picture, the sentence and both
+valuations — so the values that are permanent from the moment the transaction
+confirms are reviewed in a diff rather than typed at a prompt.
+
+That file belongs to the token rather than to this repository. A token launched
+here is not part of Toollpad: `launch` is open to anybody and nothing gets
+special treatment, so its file, its art and its page live in a repository of its
+own, cloned beside this one. The first one is
+[lane-one](https://github.com/Zmilhakim/lane-one).
 
 ```bash
-TOKEN=lane-one npm run launch                 # prints the plan, sends nothing
-TOKEN=lane-one CONFIRM=launch npm run launch  # sends it
+TOKEN=../../lane-one npm run launch                 # prints the plan, sends nothing
+TOKEN=../../lane-one CONFIRM=launch npm run launch  # sends it
 
 NAME="Some Token" SYMBOL=SOME npm run launch                 # the same, ad hoc
 NAME="Some Token" SYMBOL=SOME CONFIRM=launch npm run launch
 ```
 
-`NAME`, `SYMBOL`, `IMAGE`, `BLURB`, `LINK`, `FLOOR_ETH` and `CEIL_ETH` override
-the file for one run. The plan prints the toll the factory being launched into
-actually charges — read off the chain, not repeated from this repository — which
-is the last place a launch into the wrong launchpad can still be noticed.
+A bare `TOKEN=lane-one` is tried as a sibling checkout too, so both spellings
+find the same file. `NAME`, `SYMBOL`, `IMAGE`, `BLURB`, `LINK`, `FLOOR_ETH` and
+`CEIL_ETH` override the file for one run.
+
+After the receipt, the token's address, its notice id and the transaction are
+written back into that same `token.json`, under `deployed` — the token's own page
+needs to know which notice on the board is its own, and an address recorded by
+the transaction that produced it is the only answer that is not a guess. The
+alternative is matching on the ticker, and anybody can launch another token
+calling itself the same thing. The same record is what makes a second launch of
+the same file refuse.
+
+The plan prints the toll the factory being launched into actually charges — read
+off the chain, not repeated from this repository — which is the last place a
+launch into the wrong launchpad can still be noticed.
 
 **Do not chain these with `&&`.** A dry run is a success, so the first exits 0
 without sending anything and the next command in the chain runs against a launch

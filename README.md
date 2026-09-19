@@ -11,8 +11,13 @@ back, because there is nowhere to hold it.
 contracts/   the factory, the hook, the locker, and their tests
 site/        the web app: landing, board, launch form, dashboard
 brand/       logo, avatar, banner, OG image and the X profile kit
-tokens/      the tokens launched through it, one folder each
 ```
+
+A token launched here is not part of this repository. `launch` is open to
+anybody and nothing gets special treatment, so a token's file, art and page live
+in a repository of its own — the first one is
+[lane-one](https://github.com/Zmilhakim/lane-one), and
+`TOKEN=../../lane-one npm run launch` in `contracts/` is what sends it.
 
 ## Where this came from
 

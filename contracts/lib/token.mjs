@@ -1,56 +1,83 @@
-// A token, read out of the folder it is written down in.
+// A token, read out of the file it is written down in.
 //
-// `tokens/<slug>/token.json` is the launch: the name and ticker that go on the
-// chain, the sentence that goes on the notice, the picture the site shows, and
-// the two valuations the supply opens between. Writing it down rather than
-// typing it at a prompt is the same argument as `toollpad.config.json` makes for
-// addresses — a launch is one transaction and nothing about it can be edited
-// afterwards, so the values should be reviewable in a diff before they are sent.
+// A launch is one transaction and nothing about it can be edited afterwards, so
+// the name, the ticker, the sentence on the notice and the two valuations the
+// supply opens between are better reviewed in a diff than typed at a prompt.
+// That file is the token's, not the launchpad's: a token launched here is not
+// part of Toollpad, and the ones this repository's own scripts sent live in
+// repositories of their own.
+//
+// So `TOKEN` is a path. `TOKEN=../../lane-one` finds a repository cloned beside
+// this one; `TOKEN=lane-one` finds the same thing, because a bare name is tried
+// as a sibling checkout too; and `TOKEN=/somewhere/token.json` is taken as it
+// is. What is never guessed is which token a launch is for.
 //
 // It reads and checks before a launch, and writes exactly one thing after one:
-// where the token landed. Nothing in a token folder is secret, and nothing
-// secret ever goes in one.
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+// where the token landed. Nothing in a token file is secret, and nothing secret
+// ever goes in one.
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { fail } from "./env.mjs";
 
-const TOKENS = join(dirname(dirname(dirname(fileURLToPath(import.meta.url)))), "tokens");
+const contracts = dirname(dirname(fileURLToPath(import.meta.url)));
+const beside = dirname(dirname(contracts)); // where a sibling checkout would be
+
+/**
+ * The file `TOKEN` names, or nothing.
+ *
+ * Four places are tried, in the order that puts what was actually typed first.
+ * A directory is allowed because a token lives in one, and `token.json` is
+ * always the file inside it.
+ */
+function findToken(value) {
+  const asked = String(value).trim();
+  if (asked === "") return null;
+
+  const candidates = [];
+  const add = (path) => {
+    candidates.push(path.endsWith(".json") ? path : join(path, "token.json"));
+  };
+
+  add(isAbsolute(asked) ? asked : resolve(process.cwd(), asked));
+  if (!isAbsolute(asked) && !asked.includes("/")) {
+    add(join(contracts, "..", "tokens", asked));
+    add(join(beside, asked));
+  }
+
+  return candidates.find((path) => existsSync(path)) ?? { tried: candidates };
+}
 
 const isDecimal = (value) => typeof value === "string" && /^\d+(\.\d+)?$/.test(value.trim()) && Number(value) > 0;
-
-/** Every folder under `tokens/` that actually holds a token. */
-export function knownTokens() {
-  if (!existsSync(TOKENS)) return [];
-  return readdirSync(TOKENS).filter((slug) => existsSync(join(TOKENS, slug, "token.json")));
-}
 
 /**
  * The token `slug` names, checked hard enough that a bad one fails here rather
  * than inside a simulated transaction where the revert says `EmptyMetadata`.
  */
-export function loadToken(slug) {
-  const clean = String(slug).trim();
-  const path = join(TOKENS, clean, "token.json");
+export function loadToken(value) {
+  const found = findToken(value);
 
-  if (!/^[a-z0-9][a-z0-9-]*$/.test(clean) || !existsSync(path)) {
-    const known = knownTokens();
+  if (!found || typeof found !== "string") {
     fail(
-      `no token written down at tokens/${clean}/token.json`,
+      `no token file at ${value}`,
       "",
-      known.length > 0 ? `There is: ${known.join(", ")}` : "There are none yet.",
+      "TOKEN is a path to a token.json, or to the folder holding one. Tried:",
+      ...(found?.tried ?? []).map((path) => `  ${path}`),
     );
   }
+
+  const path = found;
+  const clean = dirname(path).split("/").pop();
 
   let token;
   try {
     token = JSON.parse(readFileSync(path, "utf8"));
   } catch (error) {
-    fail(`tokens/${clean}/token.json is not valid JSON: ${error.message}`);
+    fail(`${path} is not valid JSON: ${error.message}`);
   }
 
-  const say = (...lines) => fail(`tokens/${clean}/token.json — ${lines[0]}`, ...lines.slice(1));
+  const say = (...lines) => fail(`${path} — ${lines[0]}`, ...lines.slice(1));
 
   if (typeof token.name !== "string" || token.name.trim() === "") say("name is empty, and the factory refuses that");
   if (typeof token.symbol !== "string" || !/^[A-Z0-9]{2,11}$/.test(token.symbol)) {
@@ -83,12 +110,12 @@ export function loadToken(slug) {
   // rather than quietly making the pair.
   if (token.deployed?.token) {
     fail(
-      `tokens/${clean} has already been launched: ${token.deployed.token}`,
+      `${path} has already been launched: ${token.deployed.token}`,
       token.deployed.launchTx ? `  in ${token.deployed.launchTx}` : "",
       "",
       "Launching it again would deploy a second contract with the same name and",
-      "ticker. If that is really what you want, copy the folder under a new slug;",
-      "if the recorded launch is wrong, delete the `deployed` block first.",
+      "ticker. If that is really what you want, copy the folder and give the copy",
+      "its own name; if the recorded launch is wrong, delete the `deployed` block.",
     );
   }
 
@@ -102,7 +129,8 @@ export function loadToken(slug) {
     openingEth: launch.openingEth.trim(),
     ceilingEth: launch.ceilingEth.trim(),
     tickSpacing: launch.tickSpacing,
-    path: `tokens/${clean}/token.json`,
+    path,
+    slug: clean,
   };
 }
 
@@ -115,12 +143,11 @@ export function loadToken(slug) {
  * not a guess, and the page checks it against the notice before printing a
  * figure.
  */
-export function recordLaunched(slug, values) {
-  const path = join(TOKENS, slug, "token.json");
+export function recordLaunched(path, values) {
   const token = JSON.parse(readFileSync(path, "utf8"));
 
   token.deployed = { ...token.deployed, ...values };
   writeFileSync(path, `${JSON.stringify(token, null, 2)}\n`);
 
-  console.log(`\nwritten to tokens/${slug}/token.json: ${Object.keys(values).join(", ")}`);
+  console.log(`\nwritten to ${path}: ${Object.keys(values).join(", ")}`);
 }

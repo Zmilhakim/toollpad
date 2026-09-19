@@ -1,17 +1,19 @@
 // Posts one token to the board: mints the supply, opens its pool, and locks the
 // whole supply into it. One transaction, no posting fee, nothing held back.
 //
-//   TOKEN=lane-one npm run launch                                # prints the plan
-//   TOKEN=lane-one CONFIRM=launch npm run launch                 # sends it
+//   TOKEN=../../lane-one npm run launch                          # prints the plan
+//   TOKEN=../../lane-one CONFIRM=launch npm run launch           # sends it
 //
 //   NAME="Some Token" SYMBOL=SOME npm run launch                 # the same, ad hoc
 //   NAME="Some Token" SYMBOL=SOME CONFIRM=launch npm run launch
 //
-// TOKEN names a folder under `tokens/`, where a launch is written down in full
-// and can be reviewed in a diff before it is sent — which is worth rather more
-// than a shell history for a transaction nothing can edit afterwards. Everything
-// in it can still be overridden for one run: NAME, SYMBOL, IMAGE, BLURB, LINK,
-// FLOOR_ETH and CEIL_ETH all win over the file, and over the config's defaults.
+// TOKEN is a path to a token.json, or to the folder holding one — a token
+// launched here is not part of this launchpad, so its file lives in its own
+// repository, cloned beside this one. Writing a launch down before sending it is
+// worth rather more than a shell history for a transaction nothing can edit
+// afterwards. Everything in the file can still be overridden for one run: NAME,
+// SYMBOL, IMAGE, BLURB, LINK, FLOOR_ETH and CEIL_ETH all win over it, and over
+// the config's defaults.
 //
 // Do not chain these with `&&`. A dry run is a success, so the first command
 // exits 0 without sending anything and the next one in the chain would run
@@ -119,7 +121,7 @@ console.log(`\nwould deploy the token at ${token}`);
 
 if (process.env.CONFIRM !== "launch") {
   console.log(`\nNothing was sent. To send it:\n`);
-  const again = written ? `TOKEN=${written.slug}` : `NAME="${params.name}" SYMBOL="${params.symbol}"`;
+  const again = written ? `TOKEN=${process.env.TOKEN}` : `NAME="${params.name}" SYMBOL="${params.symbol}"`;
   console.log(`    ${again} CONFIRM=launch npm run launch`);
   process.exit(0);
 }
@@ -149,7 +151,7 @@ const inPosition = amountsInPosition(notice.liquidity, range.sqrtPriceX96, notic
 // Written back before anything is printed: the receipt is in hand, and a
 // crash between here and the last line should not lose where the token is.
 if (written) {
-  recordLaunched(written.slug, {
+  recordLaunched(written.path, {
     chainId: chain.id,
     token: notice.token,
     notice: Number(launched.args.id),
