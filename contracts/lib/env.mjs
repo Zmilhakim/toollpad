@@ -78,9 +78,45 @@ export function robinhoodChain(rpcUrl) {
   });
 }
 
+/**
+ * The endpoint to talk to, checked before anything tries to reach it.
+ *
+ * `export RPC_URL=https://…` is what every instruction for replacing a dead
+ * endpoint looks like, and the ellipsis is one paste away from being the value.
+ * A URL that is obviously a placeholder produces exactly the same "cannot reach
+ * the RPC" as a real outage, which sends somebody debugging their network over
+ * a typo. Say which one it is instead.
+ */
+function readRpcUrl() {
+  const value = (process.env.RPC_URL ?? "").trim();
+  if (value === "") return DEFAULT_RPC_URL;
+
+  if (/[…]|\.\.\.$/.test(value) || value === "https://" || value === "http://") {
+    fail(
+      `RPC_URL is ${value}, which is the placeholder from the instructions rather than an endpoint.`,
+      "",
+      "Either put a real URL there, or clear it and use the default:",
+      "",
+      "    unset RPC_URL",
+    );
+  }
+
+  let parsed;
+  try {
+    parsed = new URL(value);
+  } catch {
+    fail(`RPC_URL is not a URL: ${value}`, "", "Clear it with `unset RPC_URL` to use the default.");
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+    fail(`RPC_URL has to be http or https, not ${parsed.protocol}`);
+  }
+
+  return value;
+}
+
 /** Connects, and refuses to go on if the endpoint is not the chain we meant. */
 export async function connect() {
-  const rpcUrl = process.env.RPC_URL || DEFAULT_RPC_URL;
+  const rpcUrl = readRpcUrl();
   const chain = robinhoodChain(rpcUrl);
   const publicClient = createPublicClient({ chain, transport: http() });
 
