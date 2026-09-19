@@ -1,8 +1,8 @@
 # Toollpad — the web app
 
-Next.js 15, wagmi and viem. Four routes, no database, no API: every figure on
-every page is read from the factory or straight out of the Uniswap v4 pool
-manager's storage.
+Next.js 15, wagmi and viem. No database, no API: every figure on every page is
+read from the factory, straight out of the Uniswap v4 pool manager's storage, or
+out of the same file the launch transaction is sent from.
 
 ```bash
 npm install
@@ -19,6 +19,27 @@ npm run build
 | `/launch` | Launch a token — the whole form is six fields and two prices |
 | `/dashboard` | What this address launched, and the toll it is owed |
 | `/learn` | The mechanism, and the parts worth being clear-eyed about |
+| `/t/<slug>` | One token's page, for each folder in `../tokens` |
+
+## A token's page
+
+`/t/<slug>` is built for every folder in [`../tokens`](../tokens), at build time,
+from that folder's `token.json` — the same file `npm run launch` sends. So the
+page and the transaction cannot disagree about the name, the ticker or the range:
+there is one file, not two. `src/lib/tokens.ts` reads it; nothing is read at
+request time, and an unknown slug is a 404 rather than a lookup.
+
+The page is in two halves and they are kept apart on purpose. Above, the launch
+**as written down**. Below, **what the chain says** — and the only way it knows
+which notice is this token is the address `npm run launch` writes back into
+`token.json` after the receipt. It never matches on the ticker: a ticker is not
+an identity, and anybody can launch another token calling itself the same thing.
+If the recorded notice turns out to hold a different address, the page prints the
+mismatch instead of the figures.
+
+Its language comes from `profile.language` in the same file, so a token whose
+account is in Indonesian gets a page in Indonesian. The launchpad's own chrome
+stays as it is.
 
 ## It works before anything is deployed
 

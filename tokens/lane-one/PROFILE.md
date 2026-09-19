@@ -100,15 +100,20 @@ Lajur pertama lewat palang. Supply semua masuk pool, likuiditas dikunci, toll 4%
 
 ## Website
 
-Kosongkan dulu sampai launch-nya confirm, baru:
+Halamannya sendiri, begitu situsnya ter-deploy:
 
 ```
-https://toollpad.fun
+https://toollpad.fun/t/lane-one
 ```
+
+Isinya dua bagian: launch-nya seperti yang ditulis di `token.json`, dan apa kata
+chain — dibaca live, dan kosong selama belum diluncurkan. Setelah launch,
+alamat kontraknya tercatat di `token.json` dan halaman itu membacanya dari sana,
+bukan menebak dari ticker.
 
 Bukan halaman explorer. Kelihatannya seperti website, padahal bukan, dan basi
 begitu ada yang di-redeploy. Alamat kontraknya tempatnya di post — supaya bisa
-dicek ke chain — dan di board, yang membacanya langsung dari chain.
+dicek ke chain — dan di halaman itu, yang membacanya langsung dari chain.
 
 ## Gambar
 

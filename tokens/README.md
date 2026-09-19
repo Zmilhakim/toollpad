@@ -36,6 +36,32 @@ Anything in the file can still be overridden for one run — `NAME`, `SYMBOL`,
 `IMAGE`, `BLURB`, `LINK`, `FLOOR_ETH`, `CEIL_ETH` — and the plan prints what it
 is about to send either way.
 
+## The page
+
+Every folder here gets a page on the site at `/t/<slug>`, built from this same
+`token.json` — so the page and the transaction cannot disagree about the name,
+the ticker or the range. It is in two halves: the launch as written down, and
+what the chain says. The second half is empty until there is a launch to read.
+
+After a launch confirms, `npm run launch` writes the address back into the file:
+
+```json
+"deployed": {
+  "chainId": 4663,
+  "token": "0x…",
+  "notice": 0,
+  "launchTx": "0x…",
+  "launchedAt": "2026-09-19"
+}
+```
+
+That block is the only way the page knows which notice is this token. It never
+matches on the ticker — a ticker is not an identity, and anybody can launch
+another token calling itself the same thing. It is also what stops a second
+launch: `loadToken` refuses a folder that already records one, because launching
+it again would deploy a second contract with the same name and leave the file
+pointing at one of the two.
+
 ## The art
 
 ```bash

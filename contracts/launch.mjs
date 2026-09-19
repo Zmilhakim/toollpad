@@ -22,7 +22,7 @@ import { configAddress, configNumber, configPrice, loadConfig } from "./lib/conf
 import { connect, fail, requireDeployerKey, requireEnv } from "./lib/env.mjs";
 import { readArtifact } from "./lib/artifacts.mjs";
 import { toollpadPoolKey } from "./lib/pool.mjs";
-import { loadToken } from "./lib/token.mjs";
+import { loadToken, recordLaunched } from "./lib/token.mjs";
 import { amountsInPosition, ethPerTokenFromSqrtPrice, launchRange, pricePerToken } from "./lib/ticks.mjs";
 
 const factoryArtifact = readArtifact("ToollpadFactory");
@@ -145,6 +145,18 @@ const key = toollpadPoolKey({
   tickSpacing: notice.tickSpacing,
 });
 const inPosition = amountsInPosition(notice.liquidity, range.sqrtPriceX96, notice.tickLower, notice.tickUpper);
+
+// Written back before anything is printed: the receipt is in hand, and a
+// crash between here and the last line should not lose where the token is.
+if (written) {
+  recordLaunched(written.slug, {
+    chainId: chain.id,
+    token: notice.token,
+    notice: Number(launched.args.id),
+    launchTx: hash,
+    launchedAt: new Date(Number(notice.launchedAt) * 1000).toISOString().slice(0, 10),
+  });
+}
 
 console.log(`\nnotice     #${launched.args.id}`);
 console.log(`token      ${notice.token}`);

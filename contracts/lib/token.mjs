@@ -7,9 +7,10 @@
 // addresses — a launch is one transaction and nothing about it can be edited
 // afterwards, so the values should be reviewable in a diff before they are sent.
 //
-// This reads and checks; it never writes. Nothing in a token folder is secret,
-// and nothing secret ever goes in one.
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+// It reads and checks before a launch, and writes exactly one thing after one:
+// where the token landed. Nothing in a token folder is secret, and nothing
+// secret ever goes in one.
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -76,6 +77,21 @@ export function loadToken(slug) {
   }
   if (typeof (token.blurb ?? "") !== "string") say("blurb must be a string");
 
+  // Launching the same written-down token twice deploys a second contract with
+  // the same name and ticker, and leaves the file pointing at only one of them —
+  // which is the shape of a token whose real address nobody can settle. Stop,
+  // rather than quietly making the pair.
+  if (token.deployed?.token) {
+    fail(
+      `tokens/${clean} has already been launched: ${token.deployed.token}`,
+      token.deployed.launchTx ? `  in ${token.deployed.launchTx}` : "",
+      "",
+      "Launching it again would deploy a second contract with the same name and",
+      "ticker. If that is really what you want, copy the folder under a new slug;",
+      "if the recorded launch is wrong, delete the `deployed` block first.",
+    );
+  }
+
   return {
     slug: clean,
     name: token.name.trim(),
@@ -88,4 +104,23 @@ export function loadToken(slug) {
     tickSpacing: launch.tickSpacing,
     path: `tokens/${clean}/token.json`,
   };
+}
+
+/**
+ * Where a launch landed, written back into the token's own file.
+ *
+ * Without this the site would have to guess which notice on the board is this
+ * token, and the only thing it could guess from is the ticker — which anybody
+ * can launch again. An address recorded by the transaction that produced it is
+ * not a guess, and the page checks it against the notice before printing a
+ * figure.
+ */
+export function recordLaunched(slug, values) {
+  const path = join(TOKENS, slug, "token.json");
+  const token = JSON.parse(readFileSync(path, "utf8"));
+
+  token.deployed = { ...token.deployed, ...values };
+  writeFileSync(path, `${JSON.stringify(token, null, 2)}\n`);
+
+  console.log(`\nwritten to tokens/${slug}/token.json: ${Object.keys(values).join(", ")}`);
 }
