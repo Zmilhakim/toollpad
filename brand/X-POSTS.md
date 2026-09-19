@@ -5,6 +5,40 @@ an address: fill those in from `toollpad.config.json` after deploying, and check
 each one against the chain before posting it. A contract address in a post is
 the one thing readers cannot verify by reading the post.
 
+## On chain — the first one to post
+
+*Image: `out/deployed-1600x900.png`. Every line on it is checkable: three
+addresses, a transaction, and the address that deployed them.*
+
+**Indonesian:**
+
+> Toollpad sudah di chain. Robinhood Chain, Uniswap v4.
+>
+> Satu fee: 5% tiap swap, 80%-nya buat yang nge-launch.
+>
+> Likuiditas dikunci — bukan dijanjikan, bukan timelock. Locker-nya memang tidak
+> punya fungsi untuk menariknya. Source-nya sudah verified, buka sendiri dan
+> cari kata `withdraw`. Tidak ada.
+>
+> Board-nya masih kosong. Siapa pun bisa posting ke situ.
+
+**English:**
+
+> Toollpad is on chain. Robinhood Chain, Uniswap v4.
+>
+> One fee: 5% of every swap, 80% of it to whoever launched the token.
+>
+> The liquidity is locked — not promised, not timelocked. The locker has no
+> function that takes any out. The source is verified: open it and search for
+> `withdraw`. There is nothing there.
+>
+> The board is empty. Anyone can post to it.
+
+The deployer address is on the card on purpose. It deployed the launchpad and
+holds no power over it — no owner, no admin, and `launch` is open to everybody —
+which is a claim worth putting next to the address it is about rather than
+somewhere it cannot be checked.
+
 ## The pinned one
 
 > Toollpad is a launchpad where the fee is the product.

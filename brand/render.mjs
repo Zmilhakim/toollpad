@@ -76,6 +76,30 @@ if (LP_FEE !== 0) {
 }
 
 /**
+ * The addresses, read out of the deployment record rather than typed here.
+ *
+ * A card carrying a contract address is the one thing a reader can check and
+ * nobody can alter by quoting it back differently — which only holds if the card
+ * cannot print an address the project does not actually have. So these come from
+ * the config the deploy script wrote, and a missing one stops the render.
+ */
+const CHAIN = JSON.parse(readFileSync(join(here, "..", "contracts", "toollpad.config.json"), "utf8"));
+const DEPLOYED = CHAIN.deployed ?? {};
+
+for (const name of ["factory", "hook", "locker"]) {
+  const value = DEPLOYED[name];
+  if (!/^0x[0-9a-fA-F]{40}$/.test(value ?? "")) {
+    throw new Error(`toollpad.config.json has no deployed.${name} — there is no address to put on a card`);
+  }
+}
+if (!/^0x[0-9a-fA-F]{40}$/.test(CHAIN.deployer ?? "")) {
+  throw new Error("toollpad.config.json has no deployer — the card says who deployed it");
+}
+if (!/^0x[0-9a-fA-F]{64}$/.test(DEPLOYED.deployTx ?? "")) {
+  throw new Error("toollpad.config.json has no deployed.deployTx — the card points at the transaction");
+}
+
+/**
  * The locker's whole claim is a negative: there is no way out. Assert it against
  * the source, so a card saying "locked forever" cannot outlive the contract that
  * made it true.
@@ -280,6 +304,67 @@ const tollCard = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<styl
   </div>
 </body></html>`;
 
+const deployedCard = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${BASE}
+  body { width: 1600px; height: 900px; overflow: hidden; background: ${PALETTE.ink}; }
+  .frame { width: 1600px; height: 900px; padding: 50px; }
+  .panel { width: 100%; height: 100%; border: 4px solid ${PALETTE.signal}; display: flex; flex-direction: column; }
+  .addr { padding: 16px 0; border-bottom: 1px solid rgb(245 197 24 / .2); }
+  .addr:last-child { border-bottom: 0; }
+  .addr .what { font-size: 17px; letter-spacing: .16em; text-transform: uppercase; color: ${PALETTE.inkFaint}; }
+  .addr .hex { margin-top: 5px; font-size: 27px; font-weight: 600; color: ${PALETTE.paper}; letter-spacing: .005em; }
+  .seal { font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: ${PALETTE.signal}; }
+</style></head><body>
+  <div class="frame asphalt">
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;background:${PALETTE.signal};color:${PALETTE.ink};padding:15px 34px;font-size:17px;font-weight:600;letter-spacing:.18em">
+        <span>ON CHAIN &mdash; SOURCE VERIFIED</span>
+        <span>${BRAND.chain}</span>
+      </div>
+
+      <div style="flex:1;min-height:0;display:flex;align-items:center;gap:48px;padding:28px 46px">
+        <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:16px">
+          ${gateSvg({ size: 190 })}
+          <div class="display" style="font-size:64px;line-height:1;color:${PALETTE.signal}">${RATE.toll}</div>
+          <div class="micro" style="font-size:15px">EVERY SWAP</div>
+          <div class="micro" style="font-size:15px;color:${PALETTE.signal}">${RATE.creator} YOURS</div>
+        </div>
+
+        <div style="flex:1;min-width:0">
+          <div class="addr">
+            <div class="what">Factory &mdash; the board</div>
+            <div class="hex">${DEPLOYED.factory}</div>
+          </div>
+          <div class="addr">
+            <div class="what">Hook &mdash; charges the toll, rate is a constant</div>
+            <div class="hex">${DEPLOYED.hook}</div>
+          </div>
+          <div class="addr">
+            <div class="what">Locker &mdash; holds the liquidity, has no way out</div>
+            <div class="hex">${DEPLOYED.locker}</div>
+          </div>
+          <div class="addr">
+            <div class="what">Deployment &mdash; one transaction, and the last word on it</div>
+            <div class="hex" style="font-size:21px;color:${PALETTE.inkFaint}">${DEPLOYED.deployTx}</div>
+          </div>
+          <div style="margin-top:18px;font-size:19px;line-height:1.5;color:${PALETTE.inkFaint}">
+            Read the locker yourself. Search it for <span style="color:${PALETTE.paper}">withdraw</span>,
+            <span style="color:${PALETTE.paper}">collect</span>, or a negative liquidity delta &mdash; there is nothing to find.
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:22px 46px;border-top:3px solid ${PALETTE.signal};background:${PALETTE.groundDeep}">
+        <div class="micro" style="font-size:15px">DEPLOYED BY &mdash; NO OWNER, NO ADMIN, NO POWER OVER IT</div>
+        <div style="margin-top:7px;font-size:27px;font-weight:600;color:${PALETTE.inkFaint}">${CHAIN.deployer}</div>
+        <div style="margin-top:16px;padding-top:14px;border-top:2px solid rgb(245 197 24 / .2);display:flex;justify-content:space-between;align-items:center">
+          <span class="micro" style="font-size:15px;color:${PALETTE.signal};font-weight:600">${BRAND.ticker} &middot; TOOLLPAD.FUN</span>
+          <span class="micro" style="font-size:15px;color:${PALETTE.signal};font-weight:600">${BRAND.promise}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body></html>`;
+
 // --- vector marks -----------------------------------------------------------
 writeFileSync(join(out, "logo-mark.svg"), gateSvg({ size: 512 }));
 writeFileSync(join(out, "logo-wordmark.svg"), wordmarkSvg({ unit: 12 }));
@@ -321,6 +406,7 @@ for (const { name, html, size, faces } of [
   { name: "banner-1500x500", html: banner, size: { width: 1500, height: 500 }, faces: ["IBM Plex Mono"] },
   { name: "og-1200x630", html: og, size: { width: 1200, height: 630 }, faces: ["Archivo Black", "IBM Plex Mono"] },
   { name: "toll-1600x900", html: tollCard, size: { width: 1600, height: 900 }, faces: ["Archivo Black", "IBM Plex Mono"] },
+  { name: "deployed-1600x900", html: deployedCard, size: { width: 1600, height: 900 }, faces: ["Archivo Black", "IBM Plex Mono"] },
 ]) {
   // Written to disk and opened over file:// — setContent leaves the base URL at
   // about:blank, where a relative or remote font is never fetched at all.
