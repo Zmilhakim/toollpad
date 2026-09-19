@@ -54,6 +54,22 @@ export const LAUNCH_TICK_SPACING = 200;
 
 export const TICKER = "TOLL";
 
+/**
+ * The deployment this one replaced.
+ *
+ * It charged 5%, was never posted to, and is still on chain — nothing can remove
+ * a contract. It is also still permissionless, so a launch into it would work
+ * and would charge the old rate. Naming it here is the only way a reader who
+ * found it on the explorer can tell which of the two is this launchpad: both are
+ * verified, both say Toollpad, and only one of them is what this site talks
+ * about.
+ */
+export const SUPERSEDED = {
+  factory: "0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6" as Address,
+  tollBps: 500,
+  deployedOn: "19 September 2026",
+} as const;
+
 export type Notice = {
   id: bigint;
   token: Address;

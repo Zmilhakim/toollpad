@@ -10,7 +10,29 @@
 // is only secret while it has existed in exactly one place. A key pasted into a
 // chat, an issue, a DM, a CI log or an AI session is not a secret any more, no
 // matter who sent it or how quickly it was deleted.
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
+
+/**
+ * The rates, read out of the contract rather than repeated here.
+ *
+ * This text said "20% of 5%" for a while after the toll became 4%, because a
+ * number written into prose has nothing checking it. Reading it from the source
+ * the hook is compiled from means the sentence cannot drift from the contract
+ * it describes.
+ */
+function rate(name) {
+  const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "src", "TollHook.sol"), "utf8");
+  const match = source.match(new RegExp(`constant\\s+${name}\\s*=\\s*([0-9_]+)`));
+  if (!match) throw new Error(`TollHook.sol no longer declares ${name}`);
+  return `${Number(match[1].replaceAll("_", "")) / 100}%`;
+}
+
+const TOLL = rate("TOLL_BPS");
+const TREASURY_SHARE = `${100 - Number(rate("CREATOR_BPS").replace("%", ""))}%`;
 
 const WALLETS = {
   deployer: {
@@ -32,14 +54,14 @@ const WALLETS = {
     ],
   },
   treasury: {
-    title: "TREASURY — receives 20% of every toll, from every launch, forever",
+    title: `TREASURY — receives ${TREASURY_SHARE} of every toll, from every launch, forever`,
     notes: [
       "This address is written into TollHook as an immutable at deployment.",
       "No function anywhere changes it. A typo is a typo forever, and every",
       "toll the treasury side ever earns goes to whatever address it is.",
       "",
-      "What it earns is the toll and only the toll: 20% of 5% of everything",
-      "paid into every pool. The rest of a trade becomes liquidity, and",
+      `What it earns is the toll and only the toll: ${TREASURY_SHARE} of ${TOLL} of`,
+      "everything paid into every pool. The rest of a trade becomes liquidity, and",
       "liquidity never comes back out — not to this address, not to anyone.",
       "",
       "It has to be an address that can hold ETH and call a function: the toll",
