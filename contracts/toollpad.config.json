@@ -9,5 +9,10 @@
     "floorEth": "1",
     "ceilEth": "100"
   },
-  "deployed": {}
+  "deployed": {
+    "factory": "0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6",
+    "hook": "0x31302e1547AeE110ADf07fe55e6a968AD973a0Cc",
+    "locker": "0xB13Be0475d312dedD2B952c51A43924089F9C575",
+    "deployTx": "0x5c267a8abd4b82a3b8c24517c07ebf5800f51635b396e4d9f84f14e0b2970a0d"
+  }
 }

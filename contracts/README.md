@@ -254,10 +254,30 @@ mined wrong does not fail loudly.
 The EVM has to be Cancun or later: v4 keeps its lock and its deltas in transient
 storage.
 
-## Not deployed, and not audited
+## Deployed
 
-`toollpad.config.json` has no addresses under `deployed` because nothing has been
-deployed. None of this is audited. What the scripts do instead is check what can
+On Robinhood Chain (4663), 19 September 2026, in transaction
+`0x5c267a8abd4b82a3b8c24517c07ebf5800f51635b396e4d9f84f14e0b2970a0d`.
+
+| Contract | Address |
+| --- | --- |
+| `ToollpadFactory` | `0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6` |
+| `TollHook` | `0x31302e1547AeE110ADf07fe55e6a968AD973a0Cc` |
+| `TollLocker` | `0xB13Be0475d312dedD2B952c51A43924089F9C575` |
+
+The hook's low 14 bits are `0x20cc` — the five callbacks it implements and
+nothing else. That is readable off the address itself rather than on anyone's
+word, which is the point of mining for it.
+
+The treasury on chain is `0xb1A81E4A729c87560eF12d7652D883e803C5422E`, read back
+out of the hook after deployment. It is an `immutable` and cannot change.
+
+**The board is empty.** Deploying put the machine on chain and launched nothing;
+`launch` is open to anybody from here on.
+
+## Not audited
+
+None of this is audited. What the scripts do instead is check what can
 be checked before spending gas: that the RPC really is the chain the config
 names, that the pool manager answers like one, that the key signing is the
 address the config expects, and — after deploying — that the hook landed on a
