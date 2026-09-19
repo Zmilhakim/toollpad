@@ -259,11 +259,17 @@ storage.
 On Robinhood Chain (4663), 19 September 2026, in transaction
 `0x5c267a8abd4b82a3b8c24517c07ebf5800f51635b396e4d9f84f14e0b2970a0d`.
 
-| Contract | Address |
-| --- | --- |
-| `ToollpadFactory` | `0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6` |
-| `TollHook` | `0x31302e1547AeE110ADf07fe55e6a968AD973a0Cc` |
-| `TollLocker` | `0xB13Be0475d312dedD2B952c51A43924089F9C575` |
+| Contract | Address | Source |
+| --- | --- | --- |
+| `ToollpadFactory` | [`0x8f61c8d1…7c6A7fd6`](https://robinhoodchain.blockscout.com/address/0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6?tab=contract) | verified |
+| `TollHook` | [`0x31302e15…D973a0Cc`](https://robinhoodchain.blockscout.com/address/0x31302e1547AeE110ADf07fe55e6a968AD973a0Cc?tab=contract) | verified |
+| `TollLocker` | [`0xB13Be047…089F9C575`](https://robinhoodchain.blockscout.com/address/0xB13Be0475d312dedD2B952c51A43924089F9C575?tab=contract) | verified |
+
+All three are verified on Blockscout, which is the point rather than a
+formality: the claims this project makes are claims about source, and the source
+is there to be read. The one worth opening is `TollLocker` — search it for
+`withdraw`, `collect` or a negative `liquidityDelta` and there is nothing to
+find, which is what "locked" means here.
 
 The hook's low 14 bits are `0x20cc` — the five callbacks it implements and
 nothing else. That is readable off the address itself rather than on anyone's
