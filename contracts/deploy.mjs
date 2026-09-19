@@ -126,7 +126,11 @@ console.log(`hook       ${hook} (flags confirmed on chain)`);
 console.log(`locker     ${locker}`);
 console.log(`treasury   ${storedTreasury} (confirmed on chain, immutable)`);
 
-recordDeployed(config, { factory, hook, locker });
+// The salt goes in with them. It is a constructor argument of the factory, so
+// verifying the source later needs it — and re-mining to find it again means
+// reproducing the exact nonce the deploy was sent at, which is the one input
+// that does not survive.
+recordDeployed(config, { factory, hook, locker, hookSalt: mined.salt, deployTx: hash });
 
 console.log(`\nNothing is launched yet. The board is empty and anyone can post to it:\n`);
 console.log(`    NAME="…" SYMBOL="…" npm run launch                  # prints the plan, sends nothing`);

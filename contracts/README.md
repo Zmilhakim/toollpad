@@ -275,6 +275,48 @@ out of the hook after deployment. It is an `immutable` and cannot change.
 **The board is empty.** Deploying put the machine on chain and launched nothing;
 `launch` is open to anybody from here on.
 
+## Publishing the source
+
+```bash
+npm run verify
+```
+
+Run it straight after deploying, and again after each launch. It spends no gas
+and needs no key — verification is a claim about source code, checked by
+recompiling it, and the chain is not touched.
+
+**This is not a nicety.** Everything this project says about itself is a
+statement about code: the locker has no function that removes liquidity, the
+rate is a `constant` with no setter, the treasury is an `immutable`. An explorer
+showing only bytecode turns all of that into something people have to take on
+trust, at exactly the moment they are deciding whether to.
+
+It publishes the launchpad's three contracts and, reading the board from the
+chain, the newest launched tokens — a token's own page is where a buyer lands,
+so an unverified token is the one that matters most. `TOKENS=20` widens that.
+
+Two details that make it work:
+
+**The compile input stands on its own.** solc resolves imports by calling back,
+so the input `compile.mjs` hands it holds only our own files — an explorer given
+that would fail on the first Uniswap import. The callback records what it
+answered, `compile.mjs` writes a standalone input with all 60 sources inlined,
+and then recompiles it with no callback and checks the bytecode is identical
+before saving it. An input that compiles differently is rejected on submission,
+which is a slow and confusing way to find out.
+
+**Constructor arguments are supplied rather than guessed.** The hook and the
+locker were deployed by the factory, so there is no creation transaction for an
+explorer to recover them from. The factory's own third argument is the mined
+salt, which is why `deploy.mjs` records it in the config: re-mining it later
+means reproducing the exact nonce the deploy was sent at, and that is the one
+input that does not survive.
+
+Blockscout's public instance sits behind Cloudflare and rate-limits. A 429 is
+the server asking for a pause rather than refusing, so every call goes through
+`lib/backoff.mjs`. If Cloudflare answers with a challenge page instead, the
+script prints the manual route and the constructor arguments to paste.
+
 ## Not audited
 
 None of this is audited. What the scripts do instead is check what can
