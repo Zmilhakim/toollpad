@@ -17,7 +17,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 const description =
-  "A launchpad on Uniswap v4 where the fee is the product. 5% of every swap, 80% of it to whoever launched the token. Supply all in the pool, liquidity locked.";
+  "A launchpad on Uniswap v4 where the fee is the product. 4% of every swap, 80% of it to whoever launched the token. Supply all in the pool, liquidity locked.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

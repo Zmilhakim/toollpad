@@ -25,7 +25,7 @@ import {TollToken} from "./TollToken.sol";
 ///   3. put the entire supply in as one position the locker cannot take back.
 ///
 /// The creator ends the transaction holding no tokens — the supply never passed
-/// through their hands or this contract's — and owning one thing: 80% of the 5%
+/// through their hands or this contract's — and owning one thing: 80% of the 4%
 /// toll that pool charges from its first trade onwards, forever.
 ///
 /// ## What is fixed, and why
@@ -81,7 +81,7 @@ contract ToollpadFactory {
     /// parameter.
     uint256 public constant FIXED_SUPPLY = 1_000_000_000e18;
 
-    /// @notice Toollpad pools charge no LP fee. The 5% toll in `TollHook` is the
+    /// @notice Toollpad pools charge no LP fee. The 4% toll in `TollHook` is the
     /// entire fee schedule.
     uint24 public constant LP_FEE = 0;
 

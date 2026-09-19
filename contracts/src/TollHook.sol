@@ -17,9 +17,9 @@ import {PoolKey} from "@uniswap/v4-core/src/types/PoolKey.sol";
 import {ModifyLiquidityParams, SwapParams} from "@uniswap/v4-core/src/types/PoolOperation.sol";
 
 /// @title TollHook
-/// @notice The toll gate. One hook, every Toollpad pool, one rate: **5% of
+/// @notice The toll gate. One hook, every Toollpad pool, one rate: **4% of
 /// everything paid into the pool**, in either direction. Buy with ETH and the
-/// toll is 5% of the ETH. Sell the token back and it is 5% of the token. The
+/// toll is 4% of the ETH. Sell the token back and it is 4% of the token. The
 /// split is fixed here and cannot be changed: 80% to whoever launched that
 /// token, 20% to the treasury.
 ///
@@ -42,12 +42,12 @@ import {ModifyLiquidityParams, SwapParams} from "@uniswap/v4-core/src/types/Pool
 ///   * **Exact input** (`amountSpecified < 0`) — the specified currency is the
 ///     input. `beforeSwap` returns a positive specified delta, which the pool
 ///     manager subtracts from the amount that reaches the curve. The trader pays
-///     exactly what they asked to pay; 95% of it is swapped.
+///     exactly what they asked to pay; 96% of it is swapped.
 ///   * **Exact output** (`amountSpecified > 0`) — the specified currency is the
 ///     output, and the input is only known once the curve has run. So the toll
 ///     is charged in `afterSwap`, whose return lands on the unspecified currency
-///     — the input. It is added on top of what the swap cost, at 5/95 of it, so
-///     the toll is still 5% of everything the trader pays in.
+///     — the input. It is added on top of what the swap cost, at 4/96 of it, so
+///     the toll is still 4% of everything the trader pays in.
 ///
 /// ## The toll is banked as a claim, not taken as cash
 ///
@@ -72,8 +72,8 @@ contract TollHook is IHooks, IUnlockCallback {
     /// @notice Basis points, for the two rates below.
     uint256 public constant BPS = 10_000;
 
-    /// @notice The toll: 5% of everything paid into a Toollpad pool.
-    uint256 public constant TOLL_BPS = 500;
+    /// @notice The toll: 4% of everything paid into a Toollpad pool.
+    uint256 public constant TOLL_BPS = 400;
 
     /// @notice The creator's share of the toll. The treasury gets the rest.
     uint256 public constant CREATOR_BPS = 8_000;
@@ -219,7 +219,7 @@ contract TollHook is IHooks, IUnlockCallback {
         int128 paid = params.zeroForOne ? delta.amount0() : delta.amount1();
         if (paid >= 0) return (IHooks.afterSwap.selector, 0);
 
-        // 5/95 of what the swap cost, so the toll is still 5% of the total the
+        // 4/96 of what the swap cost, so the toll is still 4% of the total the
         // trader parts with. Rounded up, so rounding is never a discount.
         uint256 toll = Math.mulDiv(uint256(uint128(-paid)), TOLL_BPS, BPS - TOLL_BPS, Math.Rounding.Ceil);
         if (toll == 0) return (IHooks.afterSwap.selector, 0);

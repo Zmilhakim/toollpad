@@ -7,7 +7,7 @@ Foundry, no network access needed to run the tests.
 | Contract | Job |
 | --- | --- |
 | `ToollpadFactory` | The board. Launches a token, opens its pool, locks the supply in — one transaction. |
-| `TollHook` | The toll gate. 5% of every swap, 80% to the creator, 20% to the treasury. |
+| `TollHook` | The toll gate. 4% of every swap, 80% to the creator, 20% to the treasury. |
 | `TollLocker` | Holds every launch's liquidity, and has no function that gives any back. |
 | `TollToken` | Fixed-supply ERC20. No mint, no owner, no pause. |
 
@@ -43,8 +43,8 @@ anybody has to keep — there is no moment at which anyone holds anything to kee
 
 ## The toll
 
-**5% of everything paid into the pool, in either direction.** Buy with ETH and
-the toll is 5% of the ETH. Sell the token back and it is 5% of the token. Of
+**4% of everything paid into the pool, in either direction.** Buy with ETH and
+the toll is 4% of the ETH. Sell the token back and it is 4% of the token. Of
 that, 80% goes to whoever launched the token and 20% to the treasury.
 
 There is no second fee. The pool's own LP fee is zero, which is not a setting —
@@ -67,11 +67,11 @@ input depends on the direction of the swap:
 * **Exact input** (`amountSpecified < 0`) — the specified currency is the input.
   `beforeSwap` returns a positive specified delta, which the pool manager
   subtracts from the amount reaching the curve. The trader pays exactly what they
-  asked to pay and 95% of it is swapped.
+  asked to pay and 96% of it is swapped.
 * **Exact output** (`amountSpecified > 0`) — the specified currency is the
   output, and the input is not known until the curve has run. So the toll is
   charged in `afterSwap`, whose return lands on the unspecified currency — the
-  input — at 5/95 of what the swap cost, rounded up. Still 5% of the total.
+  input — at 4/96 of what the swap cost, rounded up. Still 4% of the total.
 
 There is a test for each, and one for a swap so small the toll rounds to zero.
 
@@ -189,8 +189,8 @@ there:
   "deployer": "",          // the address that deploys — its address, not its key
   "launch": {
     "tickSpacing": 200,
-    "floorEth": "1",       // the whole supply is worth this much where selling starts
-    "ceilEth": "100"       // …and this much at the far end of the range
+    "floorEth": "1.7",     // the whole supply is worth this much where selling starts
+    "ceilEth": "170"       // …and this much at the far end of the range
   },
   "deployed": { }          // deploy.mjs fills this in
 }
@@ -233,10 +233,24 @@ for ETH it does not have. `lib/ticks.mjs` is v4's `TickMath` transliterated
 rather than approximated, because a price one tick off the range edge is a launch
 the factory refuses.
 
+A launch can be written down before it is sent. `TOKEN=<slug>` reads
+`tokens/<slug>/token.json` — the name, the ticker, the picture, the sentence and
+both valuations — so the values that are permanent from the moment the
+transaction confirms are reviewed in a diff rather than typed at a prompt. See
+[`../tokens/README.md`](../tokens/README.md).
+
 ```bash
-NAME="Some Token" SYMBOL=SOME npm run launch                 # prints the plan, sends nothing
-NAME="Some Token" SYMBOL=SOME CONFIRM=launch npm run launch  # sends it
+TOKEN=lane-one npm run launch                 # prints the plan, sends nothing
+TOKEN=lane-one CONFIRM=launch npm run launch  # sends it
+
+NAME="Some Token" SYMBOL=SOME npm run launch                 # the same, ad hoc
+NAME="Some Token" SYMBOL=SOME CONFIRM=launch npm run launch
 ```
+
+`NAME`, `SYMBOL`, `IMAGE`, `BLURB`, `LINK`, `FLOOR_ETH` and `CEIL_ETH` override
+the file for one run. The plan prints the toll the factory being launched into
+actually charges — read off the chain, not repeated from this repository — which
+is the last place a launch into the wrong launchpad can still be noticed.
 
 **Do not chain these with `&&`.** A dry run is a success, so the first exits 0
 without sending anything and the next command in the chain runs against a launch
@@ -254,10 +268,12 @@ mined wrong does not fail loudly.
 The EVM has to be Cancun or later: v4 keeps its lock and its deltas in transient
 storage.
 
-## Deployed
+## Deployed once, at 5% — and superseded
 
-On Robinhood Chain (4663), 19 September 2026, in transaction
-`0x5c267a8abd4b82a3b8c24517c07ebf5800f51635b396e4d9f84f14e0b2970a0d`.
+Toollpad went on chain on Robinhood Chain (4663) on 19 September 2026, in
+transaction
+`0x5c267a8abd4b82a3b8c24517c07ebf5800f51635b396e4d9f84f14e0b2970a0d`, charging a
+toll of **5%**:
 
 | Contract | Address | Source |
 | --- | --- | --- |
@@ -265,21 +281,35 @@ On Robinhood Chain (4663), 19 September 2026, in transaction
 | `TollHook` | [`0x31302e15…D973a0Cc`](https://robinhoodchain.blockscout.com/address/0x31302e1547AeE110ADf07fe55e6a968AD973a0Cc?tab=contract) | verified |
 | `TollLocker` | [`0xB13Be047…089F9C575`](https://robinhoodchain.blockscout.com/address/0xB13Be0475d312dedD2B952c51A43924089F9C575?tab=contract) | verified |
 
-All three are verified on Blockscout, which is the point rather than a
-formality: the claims this project makes are claims about source, and the source
-is there to be read. The one worth opening is `TollLocker` — search it for
-`withdraw`, `collect` or a negative `liquidityDelta` and there is nothing to
-find, which is what "locked" means here.
+**The toll in this repository is now 4%, so those three are not it.** `TOLL_BPS`
+is a `constant` with no setter — that is the whole claim the rate makes — so
+lowering it is not a transaction anybody can send. A different rate is a
+different hook; a hook is part of a pool's key; and the factory deploys its own
+hook in its constructor. 5% to 4% is therefore a redeploy of all three
+contracts, which is the mechanism working rather than failing.
 
-The hook's low 14 bits are `0x20cc` — the five callbacks it implements and
-nothing else. That is readable off the address itself rather than on anyone's
-word, which is the point of mining for it.
+Nothing is stranded by that. **The board was never posted to** — the 5% factory
+launched no token, so there is no pool, no locked liquidity and no creator owed
+anything on it. The contracts stay on chain because nothing can remove them, and
+nothing in this repository points at them any more: `deployed` in
+`toollpad.config.json` is empty again, and those addresses are kept beside it
+under `superseded`, with the rate they charge, so the record of what was deployed
+survives rather than being quietly overwritten by the next deploy.
 
-The treasury on chain is `0xb1A81E4A729c87560eF12d7652D883e803C5422E`, read back
-out of the hook after deployment. It is an `immutable` and cannot change.
+The salt goes with them. `deployed.hookSalt` was mined against the 5% hook's
+creation code, and changing a constant changes that code — the old salt now lands
+the hook on an address without the flags, which its own constructor rejects. So
+it is mined again:
 
-**The board is empty.** Deploying put the machine on chain and launched nothing;
-`launch` is open to anybody from here on.
+```bash
+npm run mine     # the salt for the 4% hook
+npm run deploy   # factory, hook and locker, again
+npm run verify   # publish the source of the three that now matter
+```
+
+The treasury does not change: `0xb1A81E4A729c87560eF12d7652D883e803C5422E` is
+passed in again and read back off the new hook before `deploy.mjs` will go on. It
+is an `immutable` in the new hook exactly as it was in the old one.
 
 ## Publishing the source
 

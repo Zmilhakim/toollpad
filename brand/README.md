@@ -4,7 +4,9 @@ Everything here is generated. Edit the source, re-run, commit the output.
 
 ```bash
 npm install          # sharp + playwright
-npm run render
+npm run render         # the launchpad's own kit, into out/
+npm run render:token   # the art for every token in ../tokens
+node token.mjs lane-one   # just that one
 ```
 
 Playwright needs its Chromium: `npx playwright install chromium`, unless the
@@ -22,6 +24,21 @@ finds it).
 | `banner-1500x500.png` | X / Twitter header |
 | `og-1200x630.png` | Link previews |
 | `toll-1600x900.png` | The fee schedule, as one card |
+| `deployed-1600x900.png` | Where Toollpad is on chain — only exists while it is deployed |
+
+## The tokens launched through it
+
+`token.mjs` renders a mark, an avatar, a banner and a link preview for each
+folder in [`../tokens`](../tokens), from that token's own `token.json` and
+`art.mjs`. The pieces both renderers share live in `lib/`: `pixels.mjs` turns a
+grid into an SVG, `rates.mjs` reads the figures out of the contracts, and
+`sheets.mjs` inlines the webfonts and drives the browser that screenshots a
+layout — including the two checks that keep a bad picture from shipping quietly,
+that every face applied and that nothing overflowed the canvas.
+
+A token's art follows the same rule as this kit: no handle and no domain on any
+image. `token.mjs` checks each sheet for both and throws, which is the difference
+between a rule and a preference.
 
 ## The X account
 
@@ -56,14 +73,20 @@ barrier.
 
 ## The numbers on the cards are checked against the contracts
 
-`render.mjs` reads `TOLL_BPS`, `CREATOR_BPS`, `LP_FEE` and `FIXED_SUPPLY` out of
-`../contracts/src/` and throws if they are not what the copy says. It also greps
-`TollLocker.sol` for a `withdraw`, a `collect`, a `rescue` or a negative
+`lib/rates.mjs` reads `TOLL_BPS`, `CREATOR_BPS`, `LP_FEE` and `FIXED_SUPPLY` out
+of `../contracts/src/` and throws if they are not what the copy says — for this
+kit and for every token's art, which is the point of it being one file. It also
+greps `TollLocker.sol` for a `withdraw`, a `collect`, a `rescue` or a negative
 liquidity delta, and throws if it finds one.
 
-A card printing *5%* and *locked permanently* is a claim about deployed code.
+A card printing *4%* and *locked permanently* is a claim about deployed code.
 Change the code and the render fails until the copy is rewritten — which is the
 order those two things should happen in.
+
+The card that prints the contract addresses is rendered only while there are
+addresses to print: `deployed` in `toollpad.config.json` is empty between a
+change to the contracts and the redeploy that follows it, and the render deletes
+the stale card rather than leaving one in `out/` looking current.
 
 ## No domain on the art
 

@@ -3,29 +3,30 @@
 //   node render.mjs
 //
 // Vector marks go straight through sharp; the banner and the cards are laid out
-// in HTML and screenshotted, because they are typography, not geometry.
+// in HTML and screenshotted, because they are typography, not geometry —
+// `lib/sheets.mjs` does that part, for these and for a token's own art.
 // Everything here is reproducible — edit the source, re-run, commit the output.
-import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 
 import { gateBodySvg, gateSvg, lockupSvg, wordmarkSvg, PALETTE } from "./lib/marks.mjs";
+import { readRates } from "./lib/rates.mjs";
+import { inlineFonts, shoot } from "./lib/sheets.mjs";
 
 const require = createRequire(import.meta.url);
 const sharp = require("sharp");
-const { chromium } = require("playwright");
 
 const here = dirname(fileURLToPath(import.meta.url));
 const out = join(here, "out");
-const contracts = join(here, "..", "contracts", "src");
 
 // --- the things you would change -------------------------------------------
 export const BRAND = {
   ticker: "$TOLL",
   chain: "ROBINHOOD CHAIN 4663",
   venue: "UNISWAP V4",
-  promise: "5% TOLL · 80% TO THE CREATOR",
+  promise: "4% TOLL · 80% TO THE CREATOR",
   tagline: "LAUNCH A TOKEN. CHARGE A TOLL.",
   line: "One hook, one fee, both directions. The supply is all in the pool and the pool is locked — what a launch earns is the toll.",
 };
@@ -35,45 +36,7 @@ export const BRAND = {
 // to belong to somebody else. Nothing gets printed as pixels until it is
 // registered — see X-PROFILE.md.
 
-/**
- * The rates, read out of the contract rather than typed here.
- *
- * A card that prints "5%" is a claim about a deployed contract, and it is worth
- * exactly as much as the check behind it. These come from the source the hook is
- * compiled from, and the render fails rather than shipping a number the contract
- * does not agree with.
- */
-function constantFrom(file, name) {
-  const source = readFileSync(join(contracts, file), "utf8");
-  // Solidity writes 1_000_000_000e18, so the exponent is part of the literal and
-  // not optional to read: dropping it is how a supply of a billion prints as
-  // nothing at all.
-  const match = source.match(new RegExp(`constant\\s+${name}\\s*=\\s*([0-9_]+)(?:e(\\d+))?\\s*;`));
-  if (!match) throw new Error(`${file} no longer declares ${name} — the cards cannot state a rate it does not have`);
-  return BigInt(match[1].replaceAll("_", "")) * 10n ** BigInt(match[2] ?? 0);
-}
-
-const TOLL_BPS = Number(constantFrom("TollHook.sol", "TOLL_BPS"));
-const CREATOR_BPS = Number(constantFrom("TollHook.sol", "CREATOR_BPS"));
-const SUPPLY = constantFrom("ToollpadFactory.sol", "FIXED_SUPPLY");
-const LP_FEE = Number(constantFrom("ToollpadFactory.sol", "LP_FEE"));
-
-const RATE = {
-  toll: `${TOLL_BPS / 100}%`,
-  creator: `${CREATOR_BPS / 100}%`,
-  treasury: `${(10_000 - CREATOR_BPS) / 100}%`,
-  supply: (SUPPLY / 10n ** 18n).toLocaleString("en-US"),
-};
-
-// The three figures the cards print, checked against what they are supposed to
-// be. A render that would put a wrong number on an image fails instead.
-if (TOLL_BPS !== 500 || CREATOR_BPS !== 8_000 || SUPPLY !== 1_000_000_000n * 10n ** 18n) {
-  throw new Error(`the contracts now say toll ${TOLL_BPS}bps, creator ${CREATOR_BPS}bps, supply ${SUPPLY} — rewrite the copy before re-rendering`);
-}
-
-if (LP_FEE !== 0) {
-  throw new Error(`the pool's LP fee is now ${LP_FEE}, so "one fee" is no longer true — rewrite the copy first`);
-}
+const RATE = readRates();
 
 /**
  * The addresses, read out of the deployment record rather than typed here.
@@ -86,83 +49,21 @@ if (LP_FEE !== 0) {
 const CHAIN = JSON.parse(readFileSync(join(here, "..", "contracts", "toollpad.config.json"), "utf8"));
 const DEPLOYED = CHAIN.deployed ?? {};
 
-for (const name of ["factory", "hook", "locker"]) {
-  const value = DEPLOYED[name];
-  if (!/^0x[0-9a-fA-F]{40}$/.test(value ?? "")) {
-    throw new Error(`toollpad.config.json has no deployed.${name} — there is no address to put on a card`);
-  }
-}
-if (!/^0x[0-9a-fA-F]{40}$/.test(CHAIN.deployer ?? "")) {
-  throw new Error("toollpad.config.json has no deployer — the card says who deployed it");
-}
-if (!/^0x[0-9a-fA-F]{64}$/.test(DEPLOYED.deployTx ?? "")) {
-  throw new Error("toollpad.config.json has no deployed.deployTx — the card points at the transaction");
+const isAddress = (value) => /^0x[0-9a-fA-F]{40}$/.test(value ?? "");
+const IS_DEPLOYED =
+  ["factory", "hook", "locker"].every((name) => isAddress(DEPLOYED[name])) &&
+  isAddress(CHAIN.deployer) &&
+  /^0x[0-9a-fA-F]{64}$/.test(DEPLOYED.deployTx ?? "");
+
+// A partly-filled record is worse than an empty one: it is the shape a card
+// would print with a blank where an address goes. All of it, or none of it.
+if (!IS_DEPLOYED && Object.keys(DEPLOYED).length > 0) {
+  throw new Error("toollpad.config.json has a half-filled deployed record — a card cannot print part of an address");
 }
 
-/**
- * The locker's whole claim is a negative: there is no way out. Assert it against
- * the source, so a card saying "locked forever" cannot outlive the contract that
- * made it true.
- */
-const lockerSource = readFileSync(join(contracts, "TollLocker.sol"), "utf8");
-const FORBIDDEN = [/function\s+withdraw/, /function\s+collect/, /function\s+rescue/, /liquidityDelta:\s*-/];
-for (const pattern of FORBIDDEN) {
-  if (pattern.test(lockerSource)) {
-    throw new Error(`TollLocker.sol now matches ${pattern} — the lock card would be a lie`);
-  }
-}
 // ---------------------------------------------------------------------------
 
 mkdirSync(out, { recursive: true });
-
-const CSS_URL = "https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;600&display=swap";
-const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
-const fontCache = join(here, ".fonts");
-
-/**
- * Fetches the webfonts in Node and inlines them as data URIs.
- *
- * The headless browser does not inherit this environment's HTTP proxy, so a
- * <link> to Google Fonts silently fetches nothing and every render lands in a
- * fallback face. Node does have the proxy, so it does the fetching; the browser
- * then needs no network at all, which also makes a re-render reproducible.
- */
-async function inlineFonts() {
-  mkdirSync(fontCache, { recursive: true });
-
-  const cssPath = join(fontCache, "faces.css");
-  let css;
-  if (existsSync(cssPath)) {
-    css = readFileSync(cssPath, "utf8");
-  } else {
-    const response = await fetch(CSS_URL, { headers: { "User-Agent": UA } });
-    if (!response.ok) throw new Error(`could not fetch font css: ${response.status}`);
-    css = await response.text();
-    writeFileSync(cssPath, css);
-  }
-
-  const urls = [...new Set([...css.matchAll(/url\((https:[^)]+)\)/g)].map((m) => m[1]))];
-  const inlined = await Promise.all(
-    urls.map(async (url) => {
-      const file = join(fontCache, url.split("/").pop());
-      let bytes;
-      if (existsSync(file)) {
-        bytes = readFileSync(file);
-      } else {
-        const response = await fetch(url, { headers: { "User-Agent": UA } });
-        if (!response.ok) throw new Error(`could not fetch ${url}: ${response.status}`);
-        bytes = Buffer.from(await response.arrayBuffer());
-        writeFileSync(file, bytes);
-      }
-      const type = url.endsWith(".woff2") ? "font/woff2" : "font/ttf";
-      return [url, `data:${type};base64,${bytes.toString("base64")}`];
-    }),
-  );
-
-  let embedded = css;
-  for (const [url, dataUri] of inlined) embedded = embedded.split(url).join(dataUri);
-  return `<style>${embedded}</style>`;
-}
 
 const FONTS = await inlineFonts();
 
@@ -304,7 +205,11 @@ const tollCard = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<styl
   </div>
 </body></html>`;
 
-const deployedCard = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${BASE}
+// Built only when there is a deployment to build it from — see below. As a
+// function, because a template literal is filled the moment it is written, and
+// one filled from an empty record would quietly hold the word "undefined" where
+// each address goes.
+const deployedCard = () => `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${BASE}
   body { width: 1600px; height: 900px; overflow: hidden; background: ${PALETTE.ink}; }
   .frame { width: 1600px; height: 900px; padding: 50px; }
   .panel { width: 100%; height: 100%; border: 4px solid ${PALETTE.signal}; display: flex; flex-direction: column; }
@@ -388,70 +293,29 @@ const avatar = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${avatarSpa
 await sharp(Buffer.from(avatar)).png().toFile(join(out, "avatar-1000.png"));
 
 // --- typography-heavy pieces ------------------------------------------------
-// Playwright insists on the exact Chromium build its version pins, and an
-// environment that ships a different one has a working browser sitting right
-// there. Use it rather than downloading a second copy, but only when the pinned
-// build is genuinely absent.
-const pinned = chromium.executablePath();
-const fallback = process.env.PLAYWRIGHT_BROWSERS_PATH ? join(process.env.PLAYWRIGHT_BROWSERS_PATH, "chromium") : null;
-const executablePath = existsSync(pinned) || !fallback || !existsSync(fallback) ? undefined : fallback;
-
-if (executablePath) console.log(`using the environment's chromium at ${executablePath}`);
-
-const browser = await chromium.launch(executablePath ? { executablePath } : {});
-const tmp = join(out, ".render");
-mkdirSync(tmp, { recursive: true });
-
-for (const { name, html, size, faces } of [
+const sheets = [
   { name: "banner-1500x500", html: banner, size: { width: 1500, height: 500 }, faces: ["IBM Plex Mono"] },
   { name: "og-1200x630", html: og, size: { width: 1200, height: 630 }, faces: ["Archivo Black", "IBM Plex Mono"] },
   { name: "toll-1600x900", html: tollCard, size: { width: 1600, height: 900 }, faces: ["Archivo Black", "IBM Plex Mono"] },
-  { name: "deployed-1600x900", html: deployedCard, size: { width: 1600, height: 900 }, faces: ["Archivo Black", "IBM Plex Mono"] },
-]) {
-  // Written to disk and opened over file:// — setContent leaves the base URL at
-  // about:blank, where a relative or remote font is never fetched at all.
-  const page = join(tmp, `${name}.html`);
-  writeFileSync(page, html);
+];
 
-  const tab = await browser.newPage({ viewport: size, deviceScaleFactor: 1 });
-  await tab.goto(pathToFileURL(page).href, { waitUntil: "networkidle" });
-
-  // document.fonts.check() answers true for a family the page never loaded, so
-  // it proves nothing. Ask for each face by name first — a face nothing on the
-  // page uses is never fetched otherwise — then measure: if it is missing, the
-  // text lands on the fallback and matches it exactly.
-  const missing = await tab.evaluate(async (families) => {
-    await Promise.all(families.map((family) => document.fonts.load(`400 64px '${family}'`)));
-    await document.fonts.ready;
-
-    const measure = (stack) => {
-      const el = document.createElement("span");
-      el.textContent = "Every swap pays a toll";
-      el.style.cssText = `position:absolute;visibility:hidden;white-space:nowrap;font-size:64px;font-family:${stack}`;
-      document.body.appendChild(el);
-      const width = el.getBoundingClientRect().width;
-      el.remove();
-      return width;
-    };
-
-    const fallbackWidth = measure("serif");
-    return families.filter((family) => measure(`'${family}',serif`) === fallbackWidth);
-  }, faces);
-
-  if (missing.length > 0) throw new Error(`${name}: webfont did not apply — ${missing.join(", ")} fell back`);
-
-  const overflow = await tab.evaluate(() => ({
-    x: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    y: document.documentElement.scrollHeight - document.documentElement.clientHeight,
-  }));
-  if (overflow.x > 0 || overflow.y > 0) {
-    throw new Error(`${name}: content overflows the canvas by ${overflow.x}x${overflow.y}px`);
-  }
-
-  await tab.screenshot({ path: join(out, `${name}.png`) });
-  await tab.close();
+// The card that prints where Toollpad is only exists while Toollpad is
+// somewhere. Between a change to the contracts and the redeploy that follows it
+// there is no such place, so the card is not rendered and a stale one — with the
+// old addresses and the old rate on it — is removed rather than left lying in
+// `out/` looking current.
+if (IS_DEPLOYED) {
+  sheets.push({
+    name: "deployed-1600x900",
+    html: deployedCard(),
+    size: { width: 1600, height: 900 },
+    faces: ["Archivo Black", "IBM Plex Mono"],
+  });
+} else {
+  rmSync(join(out, "deployed-1600x900.png"), { force: true });
+  console.log("nothing is deployed in toollpad.config.json, so the card that prints the addresses is not rendered");
 }
-await browser.close();
-rmSync(tmp, { recursive: true, force: true });
+
+await shoot(sheets, out);
 
 console.log(`brand kit written to out/ — toll ${RATE.toll}, creator ${RATE.creator}, checked against the contracts`);

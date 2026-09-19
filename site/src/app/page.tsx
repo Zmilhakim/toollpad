@@ -9,7 +9,7 @@ import { clsx } from "@/lib/clsx";
 
 /** The hero's figures. `wide` takes a whole row where a half one is too narrow. */
 const FACTS: Array<[label: string, value: string, wide: boolean]> = [
-  ["Toll", "5%", false],
+  ["Toll", "4%", false],
   ["To the creator", "80%", false],
   ["Pool fee", "None", false],
   ["Liquidity", "Locked", false],
@@ -28,7 +28,7 @@ const STEPS = [
   },
   {
     title: "Every swap pays the toll",
-    body: "5% of everything paid into the pool, in either direction. Buys pay it in ETH, sells pay it in the token. 80% of it is yours, for as long as anyone trades.",
+    body: "4% of everything paid into the pool, in either direction. Buys pay it in ETH, sells pay it in the token. 80% of it is yours, for as long as anyone trades.",
   },
 ];
 
@@ -47,7 +47,7 @@ export default function Home() {
             </h1>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-lane-soft sm:text-base">
               Toollpad is a launchpad where the fee is the product. The supply goes into the pool, the pool is locked,
-              and from the first trade onwards every swap pays <strong className="text-lane">5%</strong> —{" "}
+              and from the first trade onwards every swap pays <strong className="text-lane">4%</strong> —{" "}
               <strong className="text-lane">80% of it</strong> to whoever launched the token.
             </p>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-lane-soft">

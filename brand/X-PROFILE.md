@@ -12,7 +12,7 @@ dash counts as one.
 Toollpad | $TOLL
 ```
 
-Alternatives: `Toollpad` (7) · `Toollpad — 5% toll, 80% yours` (28)
+Alternatives: `Toollpad` (7) · `Toollpad — 4% toll, 80% yours` (28)
 
 ## Handle
 
@@ -34,13 +34,13 @@ English over a feed in Indonesian reads like a bio somebody else wrote.
 **English** (147 characters):
 
 ```
-Launch a token, charge a toll. 5% of every swap on Uniswap v4, 80% of it to whoever launched it. Supply all in the pool. Liquidity locked for good.
+Launch a token, charge a toll. 4% of every swap on Uniswap v4, 80% of it to whoever launched it. Supply all in the pool. Liquidity locked for good.
 ```
 
 **Indonesian** (138 characters):
 
 ```
-Launchpad di Robinhood Chain. Satu fee: 5% tiap swap, 80%-nya buat yang nge-launch. Semua supply masuk pool, likuiditas dikunci selamanya.
+Launchpad di Robinhood Chain. Satu fee: 4% tiap swap, 80%-nya buat yang nge-launch. Semua supply masuk pool, likuiditas dikunci selamanya.
 ```
 
 ### The rest of them
@@ -49,20 +49,20 @@ English:
 
 | Count | Text |
 | --- | --- |
-| 145 | `The fee is the product. 5% of every swap, 80% of it to whoever launched the token, and the rate sits in the pool's key where nobody can raise it.` |
-| 147 | `A launchpad with one fee: 5% of every swap, 80% to the creator. Nothing held back at launch, nothing left to withdraw. Robinhood Chain, Uniswap v4.` |
-| 143 | `One hook, one fee. 5% of every swap — 80% of it to whoever launched the token. The supply goes into the pool, and the pool does not open again.` |
-| 145 | `Launch for the price of gas. Keep 80% of a 5% toll on every swap after that. Supply fully in the pool, liquidity locked, no allocation to anyone.` |
-| 105 | `5% of every swap. 80% of it yours. The rest of the trade goes into a pool nobody can drain — us included.` |
+| 145 | `The fee is the product. 4% of every swap, 80% of it to whoever launched the token, and the rate sits in the pool's key where nobody can raise it.` |
+| 147 | `A launchpad with one fee: 4% of every swap, 80% to the creator. Nothing held back at launch, nothing left to withdraw. Robinhood Chain, Uniswap v4.` |
+| 143 | `One hook, one fee. 4% of every swap — 80% of it to whoever launched the token. The supply goes into the pool, and the pool does not open again.` |
+| 145 | `Launch for the price of gas. Keep 80% of a 4% toll on every swap after that. Supply fully in the pool, liquidity locked, no allocation to anyone.` |
+| 105 | `4% of every swap. 80% of it yours. The rest of the trade goes into a pool nobody can drain — us included.` |
 
 Indonesian:
 
 | Count | Text |
 | --- | --- |
-| 146 | `Launch cuma bayar gas. Habis itu tiap swap kena toll 5% — 80% buat kamu, terus-terusan. Supply masuk pool semua, likuiditasnya nggak bisa ditarik.` |
-| 144 | `Satu hook, satu fee: 5% tiap swap di Uniswap v4, 80% buat creator. Nggak ada presale, nggak ada jatah tim, nggak ada yang bisa narik likuiditas.` |
-| 141 | `Fee-nya yang jadi produk. 5% tiap swap, 80% buat yang nge-launch, dan tarifnya nempel di pool — nggak bisa dinaikin atau dimatiin belakangan.` |
-| 102 | `5% tiap swap. 80%-nya punya kamu. Sisanya masuk pool yang nggak bisa dikuras siapa pun, termasuk kami.` |
+| 146 | `Launch cuma bayar gas. Habis itu tiap swap kena toll 4% — 80% buat kamu, terus-terusan. Supply masuk pool semua, likuiditasnya nggak bisa ditarik.` |
+| 144 | `Satu hook, satu fee: 4% tiap swap di Uniswap v4, 80% buat creator. Nggak ada presale, nggak ada jatah tim, nggak ada yang bisa narik likuiditas.` |
+| 141 | `Fee-nya yang jadi produk. 4% tiap swap, 80% buat yang nge-launch, dan tarifnya nempel di pool — nggak bisa dinaikin atau dimatiin belakangan.` |
+| 102 | `4% tiap swap. 80%-nya punya kamu. Sisanya masuk pool yang nggak bisa dikuras siapa pun, termasuk kami.` |
 
 ### How to pick
 
@@ -71,7 +71,7 @@ lines before anyone has to tap. The long ones say the two numbers *and* what
 happens to the liquidity, which is the question every launchpad gets asked
 second.
 
-Whichever you take, the bio makes the same two claims the contracts make — **5%**
+Whichever you take, the bio makes the same two claims the contracts make — **4%**
 and **80%** — and those are checkable: `TOLL_BPS` and `CREATOR_BPS` in
 `TollHook.sol`, constants with no setter. Change one and this file is wrong, so
 change this file too.
@@ -120,7 +120,7 @@ an image before it is yours.**
 ## The numbers on the art are checked
 
 `render.mjs` reads `TOLL_BPS`, `CREATOR_BPS` and `FIXED_SUPPLY` out of the
-contract sources and refuses to render if they are not 500, 8000 and one
+contract sources and refuses to render if they are not 400, 8000 and one
 billion. It also greps `TollLocker.sol` for a `withdraw`, a `collect` or a
 negative liquidity delta, and refuses if it finds one — a card saying *locked
 permanently* is a claim about a contract, and it is worth exactly as much as the

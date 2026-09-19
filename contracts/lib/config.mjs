@@ -39,20 +39,23 @@ export function loadConfig() {
  * ever 66 characters of hex, so the test needs no cleverness.
  */
 /**
- * The two values here that are legitimately 32 bytes of hex, and neither is a
- * secret: the salt the hook was mined with — a constructor argument, and the
- * one input a later verification cannot recompute — and the transaction the
- * deployment landed in.
+ * The values here that are legitimately 32 bytes of hex, and none is a secret:
+ * the salt the hook was mined with — a constructor argument, and the one input a
+ * later verification cannot recompute — and the transaction the deployment
+ * landed in. Once for the live deployment, and once for each superseded one,
+ * whose salt and transaction are the whole of what makes it still checkable.
  *
  * They are allowed by their exact path rather than by their shape, so a key
  * pasted anywhere else is still caught, including into a field of the same name
- * at a different level.
+ * at a different level. `superseded` is a list, so its paths carry an index —
+ * which is matched as a number and nothing else, rather than as "anything in
+ * between".
  */
-const THIRTY_TWO_BYTES_ON_PURPOSE = new Set(["deployed.hookSalt", "deployed.deployTx"]);
+const THIRTY_TWO_BYTES_ON_PURPOSE = [/^deployed\.(hookSalt|deployTx)$/, /^superseded\.\d+\.(hookSalt|deployTx)$/];
 
 export function refuseSecrets(node, path) {
   if (typeof node === "string") {
-    if (THIRTY_TWO_BYTES_ON_PURPOSE.has(path)) return;
+    if (THIRTY_TWO_BYTES_ON_PURPOSE.some((allowed) => allowed.test(path))) return;
 
     if (/^0x[0-9a-fA-F]{64}$/.test(node.trim())) {
       fail(

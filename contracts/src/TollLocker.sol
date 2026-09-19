@@ -37,7 +37,7 @@ import {TollToken} from "./TollToken.sol";
 /// deployment less.
 ///
 /// There is nothing to collect here either. Toollpad pools are opened with an LP
-/// fee of zero — the 5% toll in `TollHook` is the entire fee schedule — so this
+/// fee of zero — the 4% toll in `TollHook` is the entire fee schedule — so this
 /// contract never accrues fees that would then need a way out.
 contract TollLocker is IUnlockCallback {
     using StateLibrary for IPoolManager;

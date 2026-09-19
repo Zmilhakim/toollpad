@@ -8,13 +8,16 @@ the one thing readers cannot verify by reading the post.
 ## On chain — the first one to post
 
 *Image: `out/deployed-1600x900.png`. Every line on it is checkable: three
-addresses, a transaction, and the address that deployed them.*
+addresses, a transaction, and the address that deployed them. The card is
+rendered from `toollpad.config.json`, so it exists after `npm run deploy` and not
+before — between a change to the contracts and the redeploy that follows it,
+there is nothing for it to print.*
 
 **Indonesian:**
 
 > Toollpad sudah di chain. Robinhood Chain, Uniswap v4.
 >
-> Satu fee: 5% tiap swap, 80%-nya buat yang nge-launch.
+> Satu fee: 4% tiap swap, 80%-nya buat yang nge-launch.
 >
 > Likuiditas dikunci — bukan dijanjikan, bukan timelock. Locker-nya memang tidak
 > punya fungsi untuk menariknya. Source-nya sudah verified, buka sendiri dan
@@ -26,7 +29,7 @@ addresses, a transaction, and the address that deployed them.*
 
 > Toollpad is on chain. Robinhood Chain, Uniswap v4.
 >
-> One fee: 5% of every swap, 80% of it to whoever launched the token.
+> One fee: 4% of every swap, 80% of it to whoever launched the token.
 >
 > The liquidity is locked — not promised, not timelocked. The locker has no
 > function that takes any out. The source is verified: open it and search for
@@ -44,7 +47,7 @@ somewhere it cannot be checked.
 > Toollpad is a launchpad where the fee is the product.
 >
 > Launch a token: the whole supply goes into a Uniswap v4 pool, the pool is
-> locked, and every swap after that pays a 5% toll. 80% of it is yours.
+> locked, and every swap after that pays a 4% toll. 80% of it is yours.
 >
 > No presale. No allocation. No unlock. Nothing to hold back.
 
@@ -54,7 +57,7 @@ somewhere it cannot be checked.
 
 > One fee, both directions.
 >
-> Buy: 5% of the ETH you put in. Sell: 5% of the tokens you put in. That is the
+> Buy: 4% of the ETH you put in. Sell: 4% of the tokens you put in. That is the
 > whole schedule — the pool itself charges nothing, so there is no second number
 > to read.
 >
@@ -93,7 +96,7 @@ somewhere it cannot be checked.
 >
 > Supply: 1,000,000,000, all of it in the pool.
 > Locked: permanently.
-> Toll: 5%, 80% to the creator.
+> Toll: 4%, 80% to the creator.
 > Contract: 0x…
 >
 > Read it before you buy it.

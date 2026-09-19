@@ -3,7 +3,7 @@
 A launchpad on **Uniswap v4** where the fee is the product.
 
 Launch a token: the whole supply goes into a pool against native ETH, the pool is
-locked, and every swap after that pays a **5% toll** — 80% to whoever launched
+locked, and every swap after that pays a **4% toll** — 80% to whoever launched
 the token, 20% to the treasury. Launching costs nothing but gas. Nothing is held
 back, because there is nowhere to hold it.
 
@@ -11,6 +11,7 @@ back, because there is nowhere to hold it.
 contracts/   the factory, the hook, the locker, and their tests
 site/        the web app: landing, board, launch form, dashboard
 brand/       logo, avatar, banner, OG image and the X profile kit
+tokens/      the tokens launched through it, one folder each
 ```
 
 ## Where this came from
@@ -29,7 +30,7 @@ per repository costs nothing and removes the whole class of problem.
 
 | | |
 | --- | --- |
-| **Fee** | 5% of everything paid into the pool, either direction |
+| **Fee** | 4% of everything paid into the pool, either direction |
 | **Split** | 80% creator, 20% treasury |
 | **Pool fee** | Zero. The toll is the whole schedule |
 | **Supply** | 1,000,000,000, all of it in the pool |
@@ -55,7 +56,7 @@ afterwards.
 | | Hoodpad | CRATE | Toollpad |
 | --- | --- | --- | --- |
 | Venue | Uniswap v3 | Uniswap v4 | Uniswap v4 |
-| Hook | — | none, on purpose | the toll, 5% |
+| Hook | — | none, on purpose | the toll, 4% |
 | Launches | many | exactly one | many |
 | Fee to the creator | the pool's LP fee | — | 80% of the toll |
 | Liquidity | locked | locked | locked |
@@ -85,6 +86,11 @@ the chain and refuses to go on if it is not the one that was asked for. It shoul
 be a hardware wallet address rather than a generated key: it never signs anything
 except `withdraw`.
 
-> Not audited, and not deployed. `toollpad.config.json` has no addresses under
-> `deployed` because there is nothing there yet, and the scripts read that state
-> honestly rather than filling it with placeholders.
+> Not audited, and not currently deployed. Toollpad went on chain once, on 19
+> September 2026, charging 5%; the toll here is now 4%, and `TOLL_BPS` is a
+> constant with no setter, so that is a new hook and a new deployment rather than
+> a transaction. Nothing was launched on the old one — the board never had a
+> notice on it — and its addresses are kept under `superseded` in
+> `toollpad.config.json` rather than being overwritten. `deployed` is empty
+> again, and the scripts read that state honestly rather than filling it with
+> placeholders.

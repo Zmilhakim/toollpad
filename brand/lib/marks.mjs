@@ -5,6 +5,8 @@
 // sheet, someone else's slide. These are rectangles, so they render anywhere an
 // SVG renders, at any size, with no font file to ship.
 
+import { rects } from "./pixels.mjs";
+
 export const PALETTE = {
   ground: "#161a21", // asphalt at night
   groundDeep: "#0b0e13",
@@ -87,30 +89,6 @@ const GLYPHS = {
 const GLYPH_WIDTH = 7;
 const GLYPH_HEIGHT = 9;
 const LETTER_GAP = 2;
-
-/** Runs of set pixels become one rect each, so the output stays small. */
-function rects(grid, color, offsetX = 0, offsetY = 0) {
-  const out = [];
-  grid.forEach((row, y) => {
-    let run = 0;
-    [...row].forEach((cell, x) => {
-      if (cell === "#") {
-        run += 1;
-        return;
-      }
-      if (run > 0) {
-        out.push(`<rect x="${offsetX + x - run}" y="${offsetY + y}" width="${run}" height="1" fill="${color}"/>`);
-        run = 0;
-      }
-    });
-    if (run > 0) {
-      out.push(
-        `<rect x="${offsetX + row.length - run}" y="${offsetY + y}" width="${run}" height="1" fill="${color}"/>`,
-      );
-    }
-  });
-  return out.join("");
-}
 
 /** The gate, struck on a disc, with a margin so it reads as a coin and not a crop. */
 export function gateSvg({ size = 512, disc = PALETTE.signal, ink = PALETTE.ink, pad = 2 } = {}) {

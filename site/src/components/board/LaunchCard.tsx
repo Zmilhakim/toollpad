@@ -99,7 +99,7 @@ export function LaunchCard({ notice, state }: { notice: Notice; state?: Slot0 })
           </a>
         )}
         <Link className="micro ml-auto text-lane-faint hover:text-signal" href="/learn">
-          5% toll · liquidity locked
+          4% toll · liquidity locked
         </Link>
       </div>
     </article>

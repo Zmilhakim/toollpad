@@ -45,7 +45,7 @@ export function formatEth(wei: bigint | null | undefined) {
   return `${eth < 0.0001 ? eth.toExponential(2) : eth.toFixed(5).replace(/0+$/, "").replace(/\.$/, "")} ETH`;
 }
 
-/** A basis-point rate as a percentage: 500 -> "5%". */
+/** A basis-point rate as a percentage: 400 -> "4%". */
 export function formatBps(bps: bigint | number | null | undefined) {
   if (bps === null || bps === undefined) return null;
   return `${Number(bps) / 100}%`;

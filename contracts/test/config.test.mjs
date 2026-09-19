@@ -42,11 +42,13 @@ test("a key-shaped value is refused wherever it appears", () => {
   assert.ok(refuses({ launch: { floorEth: KEY } }), "inside the launch settings");
   assert.ok(refuses({ hookSalt: KEY }), "at a path that only looks like the exempt one");
   assert.ok(refuses({ deployed: { nested: { hookSalt: KEY } } }), "one level below the exempt path");
+  assert.ok(refuses({ superseded: { hookSalt: KEY } }), "in a superseded record that is not in the list");
 });
 
-test("the two values that are 32 bytes on purpose are allowed", () => {
+test("the values that are 32 bytes on purpose are allowed", () => {
   assert.equal(refuses({ deployed: { hookSalt: KEY } }), false, "the mined salt");
   assert.equal(refuses({ deployed: { deployTx: KEY } }), false, "the deployment transaction");
+  assert.equal(refuses({ superseded: [{ hookSalt: KEY, deployTx: KEY }] }), false, "the same two, for a deployment that was replaced");
 });
 
 test("ordinary values pass", () => {
@@ -55,11 +57,15 @@ test("ordinary values pass", () => {
       chainId: 4663,
       treasury: "0xb1A81E4A729c87560eF12d7652D883e803C5422E",
       launch: { tickSpacing: 200, floorEth: "1" },
-      deployed: {
-        factory: "0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6",
-        hookSalt: `0x${"0".repeat(61)}70b`,
-        deployTx: "0x5c267a8abd4b82a3b8c24517c07ebf5800f51635b396e4d9f84f14e0b2970a0d",
-      },
+      deployed: {},
+      superseded: [
+        {
+          tollBps: 500,
+          factory: "0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6",
+          hookSalt: `0x${"0".repeat(61)}70b`,
+          deployTx: "0x5c267a8abd4b82a3b8c24517c07ebf5800f51635b396e4d9f84f14e0b2970a0d",
+        },
+      ],
     }),
     false,
   );

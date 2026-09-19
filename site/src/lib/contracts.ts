@@ -44,7 +44,7 @@ export const NATIVE = "0x0000000000000000000000000000000000000000" as Address;
  * constants in ToollpadFactory. Where a page shows them next to live data it
  * reads `boardStats()` instead, so a mismatch shows up rather than hiding.
  */
-export const TOLL_BPS = 500;
+export const TOLL_BPS = 400;
 export const CREATOR_BPS = 8_000;
 export const LP_FEE = 0;
 export const SUPPLY = 1_000_000_000n;

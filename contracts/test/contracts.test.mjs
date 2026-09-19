@@ -295,7 +295,7 @@ test("the board records every launch, newest first", async () => {
   );
   assert.equal(tokens, 2n);
   assert.equal(boardSupply, SUPPLY);
-  assert.equal(tollBps, 500n);
+  assert.equal(tollBps, 400n);
   assert.equal(creatorBps, 8000n);
 });
 
@@ -321,7 +321,7 @@ test("a range reaching above spot is refused, so the locker is never asked for E
 
 // ------------------------------------------------------------------ the toll
 
-test("a buy pays 5% in ETH, split 80/20", async () => {
+test("a buy pays 4% in ETH, split 80/20", async () => {
   const ctx = await venue();
   const { key } = await launch(ctx);
 
@@ -329,8 +329,8 @@ test("a buy pays 5% in ETH, split 80/20", async () => {
   const bought = await buy(ctx, key, spend);
   assert.equal(bought.reverted, false, "the buy reverted");
 
-  const toll = (spend * 500n) / 10_000n;
-  assert.equal(toll, ETH / 10n);
+  const toll = (spend * 400n) / 10_000n;
+  assert.equal(toll, (8n * ETH) / 100n);
 
   assert.equal(await owed(ctx, address(CREATOR), NATIVE), (toll * 8000n) / 10_000n);
   assert.equal(await owed(ctx, address(TREASURY), NATIVE), toll - (toll * 8000n) / 10_000n);
@@ -343,11 +343,11 @@ test("a buy pays 5% in ETH, split 80/20", async () => {
   assert.equal(await ctx.balanceOf(ctx.manager), spend);
 
   // And the toll came out of the trade rather than out of the trader: they paid
-  // what they asked to pay, and the curve saw 95% of it.
+  // what they asked to pay, and the curve saw 96% of it.
   assert.equal(await ctx.balanceOf(address(TRADER)), 10_000n * ETH - spend);
 });
 
-test("a sell pays 5% in the token", async () => {
+test("a sell pays 4% in the token", async () => {
   const ctx = await venue();
   const { key, token } = await launch(ctx);
 
@@ -360,7 +360,7 @@ test("a sell pays 5% in the token", async () => {
   const sold = await sell(ctx, key, token, held / 2n);
   assert.equal(sold.reverted, false, "the sell reverted");
 
-  const toll = ((held / 2n) * 500n) / 10_000n;
+  const toll = ((held / 2n) * 400n) / 10_000n;
   assert.equal(await owed(ctx, address(CREATOR), token), (toll * 8000n) / 10_000n);
   assert.equal(await owed(ctx, address(TREASURY), token), toll - (toll * 8000n) / 10_000n);
   assert.equal(await claims(ctx, token), toll);
@@ -369,7 +369,7 @@ test("a sell pays 5% in the token", async () => {
   assert.ok((await owed(ctx, address(CREATOR), NATIVE)) > 0n);
 });
 
-test("an exact-output buy pays the toll on top, and it is still 5% of the total", async () => {
+test("an exact-output buy pays the toll on top, and it is still 4% of the total", async () => {
   const ctx = await venue();
   const { key } = await launch(ctx);
 
@@ -383,18 +383,18 @@ test("an exact-output buy pays the toll on top, and it is still 5% of the total"
   assert.ok(toll > 0n, "an exact-output swap paid no toll");
   assert.equal(await claims(ctx, NATIVE), toll);
 
-  // 5% of everything the trader parted with, to the wei the rounding allows —
-  // the toll is charged at 5/95 of what the curve asked, rounded up, so it lands
-  // on 5% of the total from above rather than below.
-  const expected = (paid * 500n) / 10_000n;
-  assert.ok(toll >= expected && toll - expected <= 1n, `toll ${toll} is not 5% of ${paid} (expected ~${expected})`);
+  // 4% of everything the trader parted with, to the wei the rounding allows —
+  // the toll is charged at 4/96 of what the curve asked, rounded up, so it lands
+  // on 4% of the total from above rather than below.
+  const expected = (paid * 400n) / 10_000n;
+  assert.ok(toll >= expected && toll - expected <= 1n, `toll ${toll} is not 4% of ${paid} (expected ~${expected})`);
 });
 
 test("a swap too small to round up to a toll still goes through", async () => {
   const ctx = await venue();
   const { key } = await launch(ctx);
 
-  // 19 wei in: 5% of it is 0 after integer division, so the hook banks nothing
+  // 19 wei in: 4% of it is 0 after integer division, so the hook banks nothing
   // and has to return a zero delta rather than an empty claim.
   const tiny = await buy(ctx, key, 19n);
   assert.equal(tiny.reverted, false, "a dust-sized swap must not revert");

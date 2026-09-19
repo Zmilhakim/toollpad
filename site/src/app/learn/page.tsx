@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 
 const QUESTIONS = [
   {
-    q: "What exactly is the 5%?",
-    a: "Five percent of everything paid into the pool, in either direction. Buy with ETH and the toll is 5% of the ETH; sell the token back and it is 5% of the token. Of that, 80% goes to whoever launched the token and 20% to the treasury. There is no second fee: the pool's own LP fee is zero, so the toll is the entire fee schedule.",
+    q: "What exactly is the 4%?",
+    a: "Four percent of everything paid into the pool, in either direction. Buy with ETH and the toll is 4% of the ETH; sell the token back and it is 4% of the token. Of that, 80% goes to whoever launched the token and 20% to the treasury. There is no second fee: the pool's own LP fee is zero, so the toll is the entire fee schedule.",
   },
   {
     q: "Can the rate be changed later?",

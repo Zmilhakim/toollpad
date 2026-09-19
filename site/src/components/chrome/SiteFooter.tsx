@@ -12,7 +12,7 @@ export function SiteFooter() {
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-5">
         <span className="micro font-semibold text-signal">$TOLL</span>
         <span className="micro text-lane-soft">Uniswap v4 · Robinhood Chain {ROBINHOOD_CHAIN_ID}</span>
-        <span className="micro text-lane-soft">5% toll · 80% to the creator</span>
+        <span className="micro text-lane-soft">4% toll · 80% to the creator</span>
 
         {BOARD_IS_OPEN && FACTORY_ADDRESS ? (
           <a
