@@ -38,8 +38,22 @@ export function loadConfig() {
  * An address is 42 characters; a private key is 66. Nothing this config holds is
  * ever 66 characters of hex, so the test needs no cleverness.
  */
-function refuseSecrets(node, path) {
+/**
+ * The two values here that are legitimately 32 bytes of hex, and neither is a
+ * secret: the salt the hook was mined with — a constructor argument, and the
+ * one input a later verification cannot recompute — and the transaction the
+ * deployment landed in.
+ *
+ * They are allowed by their exact path rather than by their shape, so a key
+ * pasted anywhere else is still caught, including into a field of the same name
+ * at a different level.
+ */
+const THIRTY_TWO_BYTES_ON_PURPOSE = new Set(["deployed.hookSalt", "deployed.deployTx"]);
+
+export function refuseSecrets(node, path) {
   if (typeof node === "string") {
+    if (THIRTY_TWO_BYTES_ON_PURPOSE.has(path)) return;
+
     if (/^0x[0-9a-fA-F]{64}$/.test(node.trim())) {
       fail(
         `${path || "a value"} in toollpad.config.json looks like a private key.`,
