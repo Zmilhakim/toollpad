@@ -31,6 +31,62 @@ const CHAIN = "ROBINHOOD CHAIN 4663";
 const VENUE = "UNISWAP V4";
 
 /**
+ * The words on the art, in the language the account is in.
+ *
+ * A token's account is in one language and stays in it — a banner in English
+ * over a feed in Indonesian reads like a banner somebody else made. So the
+ * language is a field on the token rather than a property of this file, and the
+ * figures beside these words come from the contracts either way.
+ */
+const COPY = {
+  en: {
+    ticket: "LAUNCH TICKET",
+    opening: "Opening tick",
+    supply: "Supply",
+    intoPool: "Into the pool",
+    allOfIt: "All of it",
+    toll: "Toll, both ways",
+    tollValue: (rate) => `${rate.toll} · ${rate.creator} to the creator`,
+    liquidity: "Liquidity",
+    locked: "Locked, permanently",
+    chips: (rate) => [`${rate.toll} TOLL`, `${rate.creator} TO THE CREATOR`, "LIQUIDITY LOCKED"],
+    ogChips: (rate) => [`${rate.toll} TOLL, BOTH WAYS`, `${rate.supply} SUPPLY`, "POOL LOCKED"],
+    footer: ["SUPPLY ALL IN THE POOL", "LAUNCHED ON TOOLLPAD"],
+    ogFooter: (rate, opening) => [
+      `OPENING TICK · ${opening} ETH`,
+      `${rate.creator} OF THE TOLL TO THE CREATOR`,
+      "LAUNCHED ON TOOLLPAD",
+    ],
+  },
+  id: {
+    ticket: "TIKET LAUNCH",
+    opening: "Tick pembukaan",
+    supply: "Supply",
+    intoPool: "Masuk ke pool",
+    allOfIt: "Semuanya",
+    toll: "Toll, dua arah",
+    tollValue: (rate) => `${rate.toll} · ${rate.creator} buat creator`,
+    liquidity: "Likuiditas",
+    locked: "Dikunci, permanen",
+    chips: (rate) => [`TOLL ${rate.toll}`, `${rate.creator} BUAT CREATOR`, "LIKUIDITAS DIKUNCI"],
+    ogChips: (rate) => [`TOLL ${rate.toll}, DUA ARAH`, `SUPPLY ${rate.supply}`, "POOL DIKUNCI"],
+    footer: ["SUPPLY SEMUA DI POOL", "DILUNCURKAN LEWAT TOOLLPAD"],
+    ogFooter: (rate, opening) => [
+      `TICK PEMBUKAAN · ${opening} ETH`,
+      `${rate.creator} DARI TOLL BUAT CREATOR`,
+      "DILUNCURKAN LEWAT TOOLLPAD",
+    ],
+  },
+};
+
+const wordsFor = (token) => {
+  const language = token.profile?.language ?? "en";
+  const words = COPY[language];
+  if (!words) throw new Error(`${token.slug ?? token.symbol}: no art copy written in "${language}"`);
+  return words;
+};
+
+/**
  * Where the pool actually opens, run through the same tick math the launch runs.
  *
  * A launch asks for a valuation and gets the nearest tick on the grid, which is
@@ -105,19 +161,24 @@ const BASE = `
  * initialised, and the other four are constants in the contracts. Nothing here
  * is a price, a market cap or a holder count — those move, and an image cannot.
  */
-const ticket = (token, width) => `
+const ticket = (token, width) => {
+  const words = wordsFor(token);
+  return `
   <div class="ticket" style="width:${width}px">
     <div style="display:flex;justify-content:space-between;background:${PALETTE.signal};color:${PALETTE.ink};padding:9px 18px;font-size:12px;font-weight:600;letter-spacing:.18em">
-      <span>LAUNCH TICKET</span><span>${VENUE}</span>
+      <span>${words.ticket}</span><span>${VENUE}</span>
     </div>
-    <div class="row"><span>Opening tick</span><b>${openingValuation(token).eth} ETH</b></div>
-    <div class="row"><span>Supply</span><b>${RATE.supply}</b></div>
-    <div class="row"><span>Into the pool</span><b>All of it</b></div>
-    <div class="row"><span>Toll, both ways</span><b>${RATE.toll} · ${RATE.creator} to the creator</b></div>
-    <div class="row"><span>Liquidity</span><b>Locked, permanently</b></div>
+    <div class="row"><span>${words.opening}</span><b>${openingValuation(token).eth} ETH</b></div>
+    <div class="row"><span>${words.supply}</span><b>${RATE.supply}</b></div>
+    <div class="row"><span>${words.intoPool}</span><b>${words.allOfIt}</b></div>
+    <div class="row"><span>${words.toll}</span><b>${words.tollValue(RATE)}</b></div>
+    <div class="row"><span>${words.liquidity}</span><b>${words.locked}</b></div>
   </div>`;
+};
 
-const bannerSheet = (token, mark) => `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${BASE}
+const bannerSheet = (token, mark) => {
+  const words = wordsFor(token);
+  return `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${BASE}
   body { width: 1500px; height: 500px; overflow: hidden; }
   .sheet { width: 1500px; height: 500px; display: flex; flex-direction: column; }
 </style></head><body>
@@ -130,22 +191,22 @@ const bannerSheet = (token, mark) => `<!doctype html><html><head><meta charset="
         <div class="micro" style="margin-top:14px;color:${PALETTE.signal};font-weight:600">$${token.symbol} &middot; ${VENUE} &middot; ${CHAIN}</div>
         <div style="margin-top:14px;font-size:17px;line-height:1.55;color:${PALETTE.inkFaint};max-width:560px">${token.blurb}</div>
         <div style="margin-top:20px;display:flex;gap:10px">
-          <span class="chip solid">${RATE.toll} TOLL</span>
-          <span class="chip">${RATE.creator} TO THE CREATOR</span>
-          <span class="chip">LIQUIDITY LOCKED</span>
+          ${words.chips(RATE).map((chip, index) => `<span class="chip${index === 0 ? " solid" : ""}">${chip}</span>`).join("")}
         </div>
       </div>
       ${ticket(token, 420)}
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 60px;border-top:2px solid rgb(245 197 24 / .3);background:${PALETTE.groundDeep}">
       <span class="micro" style="color:${PALETTE.signal};font-weight:600">$${token.symbol}</span>
-      <span class="micro" style="color:${PALETTE.signal};font-weight:600">SUPPLY ALL IN THE POOL</span>
-      <span class="micro" style="color:${PALETTE.signal};font-weight:600">LAUNCHED ON TOOLLPAD</span>
+      ${words.footer.map((line) => `<span class="micro" style="color:${PALETTE.signal};font-weight:600">${line}</span>`).join("")}
     </div>
   </div>
 </body></html>`;
+};
 
-const ogSheet = (token, mark) => `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${BASE}
+const ogSheet = (token, mark) => {
+  const words = wordsFor(token);
+  return `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${BASE}
   body { width: 1200px; height: 630px; overflow: hidden; background: ${PALETTE.ink}; }
   .frame { width: 1200px; height: 630px; padding: 42px; }
   .panel { width: 100%; height: 100%; border: 3px solid ${PALETTE.signal}; display: flex; flex-direction: column; }
@@ -164,20 +225,20 @@ const ogSheet = (token, mark) => `<!doctype html><html><head><meta charset="utf-
             ${token.blurb}
           </p>
           <div style="margin-top:22px;display:flex;flex-wrap:wrap;gap:10px">
-            <span class="chip solid">${RATE.toll} TOLL, BOTH WAYS</span>
-            <span class="chip">${RATE.supply} SUPPLY</span>
-            <span class="chip">POOL LOCKED</span>
+            ${words.ogChips(RATE).map((chip, index) => `<span class="chip${index === 0 ? " solid" : ""}">${chip}</span>`).join("")}
           </div>
         </div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 46px;border-top:3px solid ${PALETTE.signal};background:${PALETTE.groundDeep}">
-        <span class="micro" style="color:${PALETTE.signal};font-weight:600">OPENING TICK &middot; ${openingValuation(token).eth} ETH</span>
-        <span class="micro" style="color:${PALETTE.signal};font-weight:600">${RATE.creator} OF THE TOLL TO THE CREATOR</span>
-        <span class="micro" style="color:${PALETTE.signal};font-weight:600">LAUNCHED ON TOOLLPAD</span>
+        ${words
+          .ogFooter(RATE, openingValuation(token).eth)
+          .map((line) => `<span class="micro" style="color:${PALETTE.signal};font-weight:600">${line}</span>`)
+          .join("")}
       </div>
     </div>
   </div>
 </body></html>`;
+};
 
 const slugs = process.argv.slice(2);
 const folders = (slugs.length > 0 ? slugs : readdirSync(tokensDir)).filter((slug) =>

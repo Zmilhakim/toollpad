@@ -28,6 +28,10 @@ TOKEN=lane-one npm run launch                 # prints the plan, sends nothing
 TOKEN=lane-one CONFIRM=launch npm run launch  # sends it
 ```
 
+`profile.language` picks the language the account — and the art — is in: `id` or
+`en`, one of them, all the way through. A banner in one language over a feed in
+the other reads like a banner somebody else made.
+
 Anything in the file can still be overridden for one run — `NAME`, `SYMBOL`,
 `IMAGE`, `BLURB`, `LINK`, `FLOOR_ETH`, `CEIL_ETH` — and the plan prints what it
 is about to send either way.
