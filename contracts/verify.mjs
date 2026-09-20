@@ -52,6 +52,43 @@ const BROWSER_HEADERS = {
 const isChallenge = (status, text) =>
   status === 403 && /just a moment|cloudflare|cf-browser-verification|challenge/i.test(text);
 
+/**
+ * Every request the explorer gets, with a deadline and nothing left unhandled.
+ *
+ * Both matter on a phone. A `fetch` that throws is ordinary here — Termux drops
+ * connections, and the submission carries a megabyte of sources over mobile
+ * data — and a throw that nobody catches ends the run without printing which
+ * contract it was on. A `fetch` that neither resolves nor rejects is worse: the
+ * process simply exits when the event loop empties, after eight minutes of
+ * waiting, having said nothing at all. That is how a TollLocker submission
+ * disappeared with only Node's "unsettled top-level await" left behind.
+ *
+ * So the deadline turns a hang into a throw, and the catch turns a throw into an
+ * answer. Status 0 is that answer, and it is deliberately not 429: it means the
+ * request never happened, which is not the server asking to be left alone, and
+ * retrying it on the rate-limit schedule would wait two minutes to fail the same
+ * way.
+ */
+const TIMEOUT_MS = 90_000;
+
+async function ask(url, init = {}) {
+  try {
+    const r = await fetch(url, { ...init, headers: BROWSER_HEADERS, signal: AbortSignal.timeout(TIMEOUT_MS) });
+    return { status: r.status, text: await r.text(), ok: r.ok, headers: r.headers };
+  } catch (error) {
+    const timedOut = error.name === "TimeoutError" || error.name === "AbortError";
+    // `fetch` rejects with the message "fetch failed" and puts the reason —
+    // ENOTFOUND, ECONNRESET, the TLS complaint — in `cause`, so reporting only
+    // the message says nothing about what went wrong.
+    const why = error.cause?.code ?? error.cause?.message ?? error.message;
+    return {
+      status: 0,
+      ok: false,
+      text: timedOut ? `no answer in ${TIMEOUT_MS / 1000}s` : why,
+    };
+  }
+}
+
 let input;
 try {
   input = readFileSync(join(here, "out", "solc-input.json"), "utf8");
@@ -184,13 +221,11 @@ async function verify(contract) {
 
   const url = `${explorer}/api/v2/smart-contracts/${contract.address}/verification/via/standard-input`;
 
-  const { status, text, ok } = await withBackoff(async () => {
-    const r = await fetch(url, { method: "POST", body, headers: BROWSER_HEADERS });
-    return { status: r.status, text: await r.text(), ok: r.ok, headers: r.headers };
-  }, contract.name);
+  const { status, text, ok } = await withBackoff(() => ask(url, { method: "POST", body }), contract.name);
 
   if (ok) return { ok: true, message: "submitted" };
   if (status === 429) return { ok: false, message: "still rate limited — re-run in a few minutes" };
+  if (status === 0) return { ok: false, message: `did not reach the explorer — ${text}` };
 
   // Already-verified is a success as far as anyone reading the explorer cares.
   if (/already verified/i.test(text)) return { ok: true, message: "already verified" };
@@ -200,16 +235,12 @@ async function verify(contract) {
 }
 
 async function isVerified(contract) {
-  const { status, text } = await withBackoff(async () => {
-    try {
-      const r = await fetch(`${explorer}/api/v2/smart-contracts/${contract.address}`, { headers: BROWSER_HEADERS });
-      return { status: r.status, text: await r.text(), headers: r.headers };
-    } catch (error) {
-      // A dropped connection is not a rate limit, so it must not be retried
-      // here — it falls through as "not verified", which is what it was before.
-      return { status: 0, text: error.message };
-    }
-  }, contract.name);
+  // A request that never arrived is not a rate limit, so `ask` answers 0 and it
+  // falls through as "not verified" — which is what it was before asking.
+  const { status, text } = await withBackoff(
+    () => ask(`${explorer}/api/v2/smart-contracts/${contract.address}`),
+    contract.name,
+  );
 
   if (status !== 200) return false;
   try {
