@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Panel } from "@/components/ui/Panel";
+import { FACTORY_ADDRESS, SUPERSEDED, TOLL_BPS } from "@/lib/contracts";
+import { explorerAddress } from "@/lib/chain";
+import { shortAddress } from "@/lib/format";
 import { buttonClasses } from "@/components/ui/Button";
 import { ROBINHOOD_CHAIN_ID } from "@/lib/chain";
 
@@ -55,6 +58,48 @@ export default function LearnPage() {
           </Panel>
         ))}
       </div>
+
+      <Panel label="There is an older Toollpad on chain">
+        <p className="text-sm leading-relaxed text-lane-soft">
+          An earlier deployment charged {SUPERSEDED.tollBps / 100}% and went on chain on {SUPERSEDED.deployedOn}. Its
+          factory is{" "}
+          <a
+            className="text-lane underline decoration-signal/50 underline-offset-4 hover:text-signal"
+            href={explorerAddress(SUPERSEDED.factory)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {shortAddress(SUPERSEDED.factory)}
+          </a>
+          , and it is not this one.
+        </p>
+        <p className="mt-3 text-sm leading-relaxed text-lane-soft">
+          The rate is a <code className="text-signal">constant</code> with no setter — that is the whole of what the
+          rate promises — so changing it to {TOLL_BPS / 100}% was not a transaction anybody could send. It meant
+          deploying all three contracts again. Nothing was stranded: the old board was never posted to, so there is no
+          token, no pool and no liquidity on it.
+        </p>
+        <p className="mt-3 text-sm leading-relaxed text-lane-soft">
+          It is still there, because nothing can remove a contract, and it is still open to anybody — a launch into it
+          would work and would charge the old rate.{" "}
+          {FACTORY_ADDRESS ? (
+            <>
+              The factory this site uses is{" "}
+              <a
+                className="text-lane underline decoration-signal/50 underline-offset-4 hover:text-signal"
+                href={explorerAddress(FACTORY_ADDRESS)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {shortAddress(FACTORY_ADDRESS)}
+              </a>
+              , the same one in the footer of every page. Check the address before you post to a board.
+            </>
+          ) : (
+            <>Check the address in the footer before you post to any board calling itself Toollpad.</>
+          )}
+        </p>
+      </Panel>
 
       <Panel label="What this does not promise">
         <ul className="space-y-3 text-sm leading-relaxed text-lane-soft">
