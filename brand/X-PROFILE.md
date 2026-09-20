@@ -82,18 +82,21 @@ launchpad on its first day, which is the day the bio gets written.
 
 ## Website
 
-Put in the field whatever actually serves this project's build. Today that is:
+Put in the field whatever actually serves this project's build.
+
+`toollpad.fun` is the right answer **once it is attached to the `toollpad`
+Vercel project**. It was registered on 2026-09-18 against the older `tollpad`
+project — built from `Hood-asset`, from before this repository was split out —
+and a domain can only belong to one project at a time, so it has to be removed
+there before it can be added here. Until that move happens the field should hold:
 
 ```
 https://toollpad.vercel.app
 ```
 
-`toollpad.fun` was registered on 2026-09-18 and **is not attached to this
-project**: it still points at the older `tollpad` Vercel project, built from the
-`Hood-asset` repository from before this one was split out. Move the domain
-across and it becomes the right answer here; until then it is somebody else's
-build with this project's name on it, which is the one thing a profile field must
-not link to.
+A profile linking a name to somebody else's build is the one thing this field
+must not do, and a paused project answering on this project's domain is exactly
+that.
 
 Do not put an explorer page in this field once the contracts are deployed. It
 looks like a website, it is not one, and it goes stale the first time anything is

@@ -9,18 +9,21 @@ import { tollTokenAbi } from "./abi/tollToken";
 export { toollpadFactoryAbi, tollHookAbi, tollLockerAbi, tollTokenAbi };
 
 /**
- * The factory, once there is one.
- *
- * Nothing is deployed yet, so this is empty and the site says so on every page
- * rather than rendering a board of nothing that looks like a board with nothing
- * on it. `npm run deploy` in ../contracts prints the address; put it here, or in
- * NEXT_PUBLIC_FACTORY_ADDRESS, and the whole site turns on.
+ * The factory the site reads.
  *
  * It is written here rather than only in a dashboard variable because a
  * deployment that forgets a variable does not fail — it quietly builds a page
- * telling visitors the launchpad does not exist.
+ * telling visitors the launchpad does not exist. In the file it is in git, it is
+ * reviewable in a diff, and a fresh Vercel project serves the right board
+ * without anyone remembering to configure it.
+ *
+ * NEXT_PUBLIC_FACTORY_ADDRESS still wins when set, which is how a preview build
+ * points at a different deployment without a commit.
+ *
+ * This must match `deployed.factory` in ../contracts/toollpad.config.json —
+ * that file is the record, this is the copy the browser gets.
  */
-const DEPLOYED_FACTORY = "";
+const DEPLOYED_FACTORY = "0x84834C830E90B11b583ded93d16c09f675528fdF";
 
 const configured = process.env.NEXT_PUBLIC_FACTORY_ADDRESS?.trim() || DEPLOYED_FACTORY;
 
