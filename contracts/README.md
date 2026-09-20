@@ -285,48 +285,47 @@ mined wrong does not fail loudly.
 The EVM has to be Cancun or later: v4 keeps its lock and its deltas in transient
 storage.
 
-## Deployed once, at 5% — and superseded
+## Deployed
 
-Toollpad went on chain on Robinhood Chain (4663) on 19 September 2026, in
-transaction
-`0x5c267a8abd4b82a3b8c24517c07ebf5800f51635b396e4d9f84f14e0b2970a0d`, charging a
-toll of **5%**:
+Toollpad is on Robinhood Chain (4663), charging a toll of **4%**:
 
 | Contract | Address | Source |
 | --- | --- | --- |
-| `ToollpadFactory` | [`0x8f61c8d1…7c6A7fd6`](https://robinhoodchain.blockscout.com/address/0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6?tab=contract) | verified |
-| `TollHook` | [`0x31302e15…D973a0Cc`](https://robinhoodchain.blockscout.com/address/0x31302e1547AeE110ADf07fe55e6a968AD973a0Cc?tab=contract) | verified |
-| `TollLocker` | [`0xB13Be047…089F9C575`](https://robinhoodchain.blockscout.com/address/0xB13Be0475d312dedD2B952c51A43924089F9C575?tab=contract) | verified |
+| `ToollpadFactory` | [`0x84834C83…75528fdF`](https://robinhoodchain.blockscout.com/address/0x84834C830E90B11b583ded93d16c09f675528fdF?tab=contract) | |
+| `TollHook` | [`0xC2C317b0…1126Ea0cC`](https://robinhoodchain.blockscout.com/address/0xC2C317b0234E2C2805289154649bcfA1126Ea0cC?tab=contract) | |
+| `TollLocker` | [`0xEd261a7e…dd4e6540`](https://robinhoodchain.blockscout.com/address/0xEd261a7eA22685a01bB93A2433196ADbdd4e6540?tab=contract) | |
 
-**The toll in this repository is now 4%, so those three are not it.** `TOLL_BPS`
-is a `constant` with no setter — that is the whole claim the rate makes — so
-lowering it is not a transaction anybody can send. A different rate is a
-different hook; a hook is part of a pool's key; and the factory deploys its own
-hook in its constructor. 5% to 4% is therefore a redeploy of all three
-contracts, which is the mechanism working rather than failing.
+The hook's low 14 bits are `0x20cc` — the five callbacks it implements and
+nothing else, readable off the address itself. The treasury on chain is
+`0xb1A81E4A729c87560eF12d7652D883e803C5422E`, read back out of the hook after
+deployment; it is an `immutable` and cannot change.
 
-Nothing is stranded by that. **The board was never posted to** — the 5% factory
-launched no token, so there is no pool, no locked liquidity and no creator owed
-anything on it. The contracts stay on chain because nothing can remove them, and
-nothing in this repository points at them any more: `deployed` in
-`toollpad.config.json` is empty again, and those addresses are kept beside it
-under `superseded`, with the rate they charge, so the record of what was deployed
-survives rather than being quietly overwritten by the next deploy.
+Both the factory and the hook addresses were recomputed from the source in this
+repository before the transaction was sent, and matched. That is worth more than
+it sounds: it means the code here is the code on chain, provable without trusting
+either end.
 
-The salt goes with them. `deployed.hookSalt` was mined against the 5% hook's
-creation code, and changing a constant changes that code — the old salt now lands
-the hook on an address without the flags, which its own constructor rejects. So
-it is mined again:
+**The board is empty.** Deploying put the machine on chain and launched nothing.
 
-```bash
-npm run mine     # the salt for the 4% hook
-npm run deploy   # factory, hook and locker, again
-npm run verify   # publish the source of the three that now matter
-```
+### The 5% deployment this replaced
 
-The treasury does not change: `0xb1A81E4A729c87560eF12d7652D883e803C5422E` is
-passed in again and read back off the new hook before `deploy.mjs` will go on. It
-is an `immutable` in the new hook exactly as it was in the old one.
+An earlier deployment charged 5% and went on chain on 19 September 2026, in
+transaction
+`0x5c267a8abd4b82a3b8c24517c07ebf5800f51635b396e4d9f84f14e0b2970a0d`:
+
+| Contract | Address |
+| --- | --- |
+| `ToollpadFactory` | [`0x8f61c8d1…7c6A7fd6`](https://robinhoodchain.blockscout.com/address/0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6?tab=contract) |
+| `TollHook` | [`0x31302e15…D973a0Cc`](https://robinhoodchain.blockscout.com/address/0x31302e1547AeE110ADf07fe55e6a968AD973a0Cc?tab=contract) |
+| `TollLocker` | [`0xB13Be047…089F9C575`](https://robinhoodchain.blockscout.com/address/0xB13Be0475d312dedD2B952c51A43924089F9C575?tab=contract) |
+
+`TOLL_BPS` is a `constant` with no setter — that is the whole claim the rate
+makes — so 5% to 4% is a redeploy of all three contracts rather than a
+transaction anybody can send. Nothing is stranded: that board was never posted
+to, so there is no token, no pool and no creator owed anything on it. It stays on
+chain because nothing removes a contract, and it stays open to anybody, so a
+launch into it would work and would charge the old rate. The site says so on
+`/learn`, which is where somebody who found it on the explorer would land.
 
 ## Publishing the source
 

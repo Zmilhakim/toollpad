@@ -9,7 +9,12 @@
     "floorEth": "1.7",
     "ceilEth": "170"
   },
-  "deployed": {},
+  "deployed": {
+    "factory": "0x84834C830E90B11b583ded93d16c09f675528fdF",
+    "hook": "0xC2C317b0234E2C2805289154649bcfA1126Ea0cC",
+    "locker": "0xEd261a7eA22685a01bB93A2433196ADbdd4e6540",
+    "hookSalt": "0x0000000000000000000000000000000000000000000000000000000000002e2e"
+  },
   "superseded": [
     {
       "why": "charged a 5% toll; TOLL_BPS is a constant, so 4% is a different hook and a different deployment",
