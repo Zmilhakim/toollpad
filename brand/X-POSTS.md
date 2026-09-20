@@ -5,42 +5,134 @@ an address: fill those in from `toollpad.config.json` after deploying, and check
 each one against the chain before posting it. A contract address in a post is
 the one thing readers cannot verify by reading the post.
 
-## On chain — the first one to post
+Every post here fits in 280 characters, so none of it depends on the account
+having a paid tier.
 
-*Image: `out/deployed-1600x900.png`. Every line on it is checkable: three
-addresses, a transaction, and the address that deployed them. The card is
-rendered from `toollpad.config.json`, so it exists after `npm run deploy` and not
-before — between a change to the contracts and the redeploy that follows it,
-there is nothing for it to print.*
+## The first one — a thread, not an announcement
+
+*Image on post 1: `out/deployed-1600x900.png`.*
+
+Every launchpad's first post is the same post: name, chain, fee, "we're live,
+anyone can launch." It reads as a claim, so it gets answered like one — with
+nothing, or with "proof?". This one does not announce anything. It hands the
+reader something to go disprove, and the addresses to do it with.
+
+**Do not post this until `npm run verify` has all three contracts green.** The
+whole thread tells people to go read the source. Until Blockscout is showing it,
+that instruction leads to a page of bytecode and the thread argues against
+itself.
+
+### Post 1 — the claim someone can break
 
 **Indonesian:**
 
-> Toollpad sudah di chain. Robinhood Chain, Uniswap v4.
+> Jangan percaya gua. Cek aja.
 >
-> Satu fee: 4% tiap swap, 80%-nya buat yang nge-launch.
+> Likuiditas tiap token di Toollpad ditahan satu kontrak. Buka source-nya, cari
+> `withdraw`, `collect`, atau liquidity delta negatif.
 >
-> Likuiditas dikunci — bukan dijanjikan, bukan timelock. Locker-nya memang tidak
-> punya fungsi untuk menariknya. Source-nya sudah verified, buka sendiri dan
-> cari kata `withdraw`. Tidak ada.
+> Nggak ada. Bukan dijanjikan, bukan di-timelock — fungsinya emang nggak
+> ditulis.
 >
-> Board-nya masih kosong. Siapa pun bisa posting ke situ.
+> 4% tiap swap, 80% ke yang nge-launch.
 
 **English:**
 
-> Toollpad is on chain. Robinhood Chain, Uniswap v4.
+> Don't take my word for it. Go look.
 >
-> One fee: 4% of every swap, 80% of it to whoever launched the token.
+> Every token on Toollpad has its liquidity held by one contract. Search its
+> source for `withdraw`, `collect`, or a negative liquidity delta.
 >
-> The liquidity is locked — not promised, not timelocked. The locker has no
-> function that takes any out. The source is verified: open it and search for
-> `withdraw`. There is nothing there.
+> Nothing there. The function was never written.
 >
-> The board is empty. Anyone can post to it.
+> 4% of every swap, 80% to whoever launched it.
 
-The deployer address is on the card on purpose. It deployed the launchpad and
-holds no power over it — no owner, no admin, and `launch` is open to everybody —
-which is a claim worth putting next to the address it is about rather than
-somewhere it cannot be checked.
+### Post 2 — the board is empty
+
+**Indonesian:**
+
+> Board-nya masih kosong.
+>
+> Gua deploy launchpad-nya dan nggak nge-launch token apa pun di situ. Nggak ada
+> token pertama punya gua, nggak ada presale, nggak ada alokasi yang nunggu
+> unlock.
+>
+> Yang pertama posting, ya yang pertama posting.
+
+**English:**
+
+> The board is empty.
+>
+> I deployed the launchpad and launched nothing on it. No first token of mine, no
+> presale, no allocation waiting on an unlock.
+>
+> Whoever posts first, posts first.
+
+### Post 3 — why the rate cannot move
+
+**Indonesian:**
+
+> Rate-nya `constant` di dalam hook Uniswap v4, dan di v4 hook itu bagian dari
+> identitas pool-nya.
+>
+> Jadi 4% nggak bisa jadi 10% besok. Ngubah angkanya berarti hook baru, pool
+> baru, token baru — bukan tombol yang bisa dipencet. Termasuk sama gua.
+
+**English:**
+
+> The rate is a `constant` inside a Uniswap v4 hook, and in v4 the hook is part
+> of the pool's identity.
+>
+> So 4% cannot become 10% tomorrow. Changing the number means a new hook, a new
+> pool and a new token — not a setting anyone can flip. Me included.
+
+### Post 4 — read the address, not the promises
+
+**Indonesian:**
+
+> 14 bit terakhir dari address hook-nya: `0x20cc`.
+>
+> Itu daftar izin yang dia punya, dan Uniswap v4 ngeceknya dari address-nya
+> sendiri. Lu bisa tau kontrak itu boleh ngapain aja tanpa baca satu baris kode
+> pun. Address-nya sendiri yang jadi buktinya.
+
+**English:**
+
+> The last 14 bits of the hook's address: `0x20cc`.
+>
+> That is the list of permissions it holds, and Uniswap v4 checks it off the
+> address itself. You can tell what the contract is allowed to do without reading
+> a line of its code. The address is the proof.
+
+### Post 5 — the addresses
+
+Post the card again here, or the three addresses as text so they are
+copy-pasteable. The deployer address goes last, and on purpose: it deployed the
+launchpad and holds no power over it — no owner, no admin, `launch` open to
+everybody. That is a claim worth putting directly next to the address it is
+about, where it can be checked, rather than somewhere it cannot.
+
+### If you'd rather open on a different note
+
+Two other first posts, same thread underneath. Pick one — don't post two.
+
+**The one that leads with what is missing:**
+
+> Nggak ada presale. Nggak ada alokasi. Nggak ada tim yang lagi nunggu unlock.
+> Nggak ada tombol buat naikin fee. Nggak ada fungsi buat narik likuiditas.
+>
+> Yang ada: 4% tiap swap, 80%-nya ke yang nge-launch.
+>
+> Toollpad. Board-nya kosong.
+
+**The one that leads with the cost, which is the honest thing to lead with:**
+
+> Toollpad ngambil 4% dari tiap swap. Mahal, dan gua nggak bakal bilang enggak.
+>
+> Gantinya: 80%-nya ke yang nge-launch token itu, tiap swap, selamanya.
+> Likuiditasnya di kontrak yang nggak punya fungsi buat ngeluarinnya.
+>
+> Angkanya nggak bisa diubah, jadi lu tau persis lagi milih apa.
 
 ## The pinned one
 
@@ -83,12 +175,12 @@ somewhere it cannot be checked.
 
 ## The part worth being clear-eyed about
 
-> Locked liquidity means locked. Everything anyone pays for the supply becomes
+> Locked liquidity means locked. Everything paid for the supply becomes
 > liquidity and does not come back out — not for the creator, not for us, not by
 > vote.
 >
-> The toll comes out. The liquidity does not. Those are two different promises
-> and we would rather you knew which is which.
+> The toll comes out. The liquidity does not. Two different promises, and you
+> should know which is which.
 
 ## When the first token launches
 
