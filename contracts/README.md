@@ -287,7 +287,9 @@ storage.
 
 ## Deployed
 
-Toollpad is on Robinhood Chain (4663), charging a toll of **4%**:
+Toollpad is on Robinhood Chain (4663), charging a toll of **4%**. All three
+contracts went on chain in one transaction,
+`0x5fb7e09a911b35f22b35c760fd1012713d8d74af67fa4b11337656f135812172`:
 
 | Contract | Address | Source |
 | --- | --- | --- |
