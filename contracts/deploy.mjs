@@ -1,7 +1,9 @@
 // Puts the Toollpad factory on Robinhood Chain. This launches no tokens — it
 // deploys the board, the toll hook and the locker, and `launch.mjs` posts to it.
 //
-//   DEPLOYER_KEY=0x…    the key for the address toollpad.config.json names
+//   read -rs DEPLOYER_KEY && export DEPLOYER_KEY
+//       …then paste the key for the address toollpad.config.json names.
+//       Typed this way it never reaches the shell history or the screen.
 //   RPC_URL=https://…   defaults to Robinhood's own public endpoint
 //
 // POOL_MANAGER and TREASURY still work as one-off overrides of the file.

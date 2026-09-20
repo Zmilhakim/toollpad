@@ -1,7 +1,8 @@
 // Which address does the key I stored control? Prints the address and never the
 // key, sends nothing, and needs no network unless a factory is configured.
 //
-//   DEPLOYER_KEY=0x… npm run whoami
+//   read -rs DEPLOYER_KEY && export DEPLOYER_KEY
+//   npm run whoami
 //
 // Run this after `new-wallets.mjs` and before anything that spends gas. A key
 // stored wrong is a key that fails at the worst moment; this is the cheapest

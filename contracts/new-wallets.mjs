@@ -31,6 +31,16 @@ function rate(name) {
   return `${Number(match[1].replaceAll("_", "")) / 100}%`;
 }
 
+/**
+ * How a key is put into a shell without it being seen or stored.
+ *
+ * The obvious instruction, `DEPLOYER_KEY=0x…`, is worse twice over: the
+ * ellipsis gets pasted literally by anyone following along, and a key typed
+ * that way lands in the shell history, where it outlives the session it was
+ * meant to last. `read -rs` echoes nothing and records nothing.
+ */
+const READ_KEY = "read -rs DEPLOYER_KEY && export DEPLOYER_KEY";
+
 const TOLL = rate("TOLL_BPS");
 const TREASURY_SHARE = `${100 - Number(rate("CREATOR_BPS").replace("%", ""))}%`;
 
@@ -153,11 +163,12 @@ console.log('       "deployer": "0x…"');
 console.log("");
 console.log("  4. Check you stored the right thing before you rely on it:");
 console.log("");
-console.log("       DEPLOYER_KEY=0x… npm run whoami     # prints the address, never the key");
+console.log(`       ${READ_KEY}`);
+console.log("       npm run whoami     # prints the address, never the key");
 console.log("");
 console.log("  5. Fund the deployer with ETH on Robinhood Chain, then:");
 console.log("");
-console.log("       export DEPLOYER_KEY=0x…   # in your own shell, not in a file");
+console.log(`       ${READ_KEY}   # in your own shell, not in a file`);
 console.log("       npm run mine              # see where the hook will land");
 console.log("       npm run deploy");
 console.log("");

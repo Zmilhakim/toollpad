@@ -173,7 +173,8 @@ cannot make that call can never be paid — and it should be a hardware wallet
 rather than a generated key, because it never signs anything else.
 
 ```bash
-DEPLOYER_KEY=0x… npm run whoami     # prints the address, never the key
+read -rs DEPLOYER_KEY && export DEPLOYER_KEY   # nothing echoes, nothing is logged
+npm run whoami                                # prints the address, never the key
 ```
 
 ## The launch, written down
