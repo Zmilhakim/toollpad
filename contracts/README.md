@@ -293,9 +293,14 @@ contracts went on chain in one transaction,
 
 | Contract | Address | Source |
 | --- | --- | --- |
-| `ToollpadFactory` | [`0x84834C83…75528fdF`](https://robinhoodchain.blockscout.com/address/0x84834C830E90B11b583ded93d16c09f675528fdF?tab=contract) | |
-| `TollHook` | [`0xC2C317b0…1126Ea0cC`](https://robinhoodchain.blockscout.com/address/0xC2C317b0234E2C2805289154649bcfA1126Ea0cC?tab=contract) | |
-| `TollLocker` | [`0xEd261a7e…dd4e6540`](https://robinhoodchain.blockscout.com/address/0xEd261a7eA22685a01bB93A2433196ADbdd4e6540?tab=contract) | |
+| `ToollpadFactory` | [`0x84834C83…75528fdF`](https://robinhoodchain.blockscout.com/address/0x84834C830E90B11b583ded93d16c09f675528fdF?tab=contract) | verified |
+| `TollHook` | [`0xC2C317b0…1126Ea0cC`](https://robinhoodchain.blockscout.com/address/0xC2C317b0234E2C2805289154649bcfA1126Ea0cC?tab=contract) | verified |
+| `TollLocker` | [`0xEd261a7e…dd4e6540`](https://robinhoodchain.blockscout.com/address/0xEd261a7eA22685a01bB93A2433196ADbdd4e6540?tab=contract) | verified |
+
+All three were verified on Blockscout on 2026-09-20 from `out/solc-input.json`,
+the same standard-input the deployment was compiled from — so the source on the
+explorer is the source in this repository, and the locker in particular can be
+searched for a way out rather than taken on trust.
 
 The hook's low 14 bits are `0x20cc` — the five callbacks it implements and
 nothing else, readable off the address itself. The treasury on chain is
