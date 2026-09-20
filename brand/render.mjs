@@ -50,15 +50,26 @@ const CHAIN = JSON.parse(readFileSync(join(here, "..", "contracts", "toollpad.co
 const DEPLOYED = CHAIN.deployed ?? {};
 
 const isAddress = (value) => /^0x[0-9a-fA-F]{40}$/.test(value ?? "");
-const IS_DEPLOYED =
-  ["factory", "hook", "locker"].every((name) => isAddress(DEPLOYED[name])) &&
-  isAddress(CHAIN.deployer) &&
-  /^0x[0-9a-fA-F]{64}$/.test(DEPLOYED.deployTx ?? "");
+const isTxHash = (value) => /^0x[0-9a-fA-F]{64}$/.test(value ?? "");
 
-// A partly-filled record is worse than an empty one: it is the shape a card
-// would print with a blank where an address goes. All of it, or none of it.
-if (!IS_DEPLOYED && Object.keys(DEPLOYED).length > 0) {
+// The addresses are all-or-nothing. A partly-filled set is worse than an empty
+// one: it is the shape a card would print with a blank where an address goes.
+const HAS_ADDRESSES =
+  ["factory", "hook", "locker"].every((name) => isAddress(DEPLOYED[name])) && isAddress(CHAIN.deployer);
+if (!HAS_ADDRESSES && Object.keys(DEPLOYED).length > 0) {
   throw new Error("toollpad.config.json has a half-filled deployed record — a card cannot print part of an address");
+}
+
+// The receipt is a separate thing to be missing. It is the one line on the card
+// a reader can paste into an explorer to watch the deployment happen, so the
+// card is not built without it — but a missing receipt is not a reason the logo,
+// the avatar and the banner cannot be rendered, so it stops that card alone.
+const IS_DEPLOYED = HAS_ADDRESSES && isTxHash(DEPLOYED.deployTx);
+if (HAS_ADDRESSES && !IS_DEPLOYED) {
+  console.log(
+    'toollpad.config.json has the addresses but no deployed.deployTx, so the card that prints them is not rendered\n' +
+      '  add the hash of the transaction that deployed the factory and run this again',
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -313,7 +324,9 @@ if (IS_DEPLOYED) {
   });
 } else {
   rmSync(join(out, "deployed-1600x900.png"), { force: true });
-  console.log("nothing is deployed in toollpad.config.json, so the card that prints the addresses is not rendered");
+  if (!HAS_ADDRESSES) {
+    console.log("nothing is deployed in toollpad.config.json, so the card that prints the addresses is not rendered");
+  }
 }
 
 for (const sheet of sheets) refuseIdentityOnArt(sheet.name, sheet.html, { fonts: FONTS });
