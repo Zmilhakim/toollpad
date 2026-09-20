@@ -13,7 +13,7 @@ import { createRequire } from "node:module";
 
 import { gateBodySvg, gateSvg, lockupSvg, wordmarkSvg, PALETTE } from "./lib/marks.mjs";
 import { readRates } from "./lib/rates.mjs";
-import { inlineFonts, shoot } from "./lib/sheets.mjs";
+import { inlineFonts, refuseIdentityOnArt, shoot } from "./lib/sheets.mjs";
 
 const require = createRequire(import.meta.url);
 const sharp = require("sharp");
@@ -262,7 +262,7 @@ const deployedCard = () => `<!doctype html><html><head><meta charset="utf-8">${F
         <div class="micro" style="font-size:15px">DEPLOYED BY &mdash; NO OWNER, NO ADMIN, NO POWER OVER IT</div>
         <div style="margin-top:7px;font-size:27px;font-weight:600;color:${PALETTE.inkFaint}">${CHAIN.deployer}</div>
         <div style="margin-top:16px;padding-top:14px;border-top:2px solid rgb(245 197 24 / .2);display:flex;justify-content:space-between;align-items:center">
-          <span class="micro" style="font-size:15px;color:${PALETTE.signal};font-weight:600">${BRAND.ticker} &middot; TOOLLPAD.FUN</span>
+          <span class="micro" style="font-size:15px;color:${PALETTE.signal};font-weight:600">${BRAND.ticker}</span>
           <span class="micro" style="font-size:15px;color:${PALETTE.signal};font-weight:600">${BRAND.promise}</span>
         </div>
       </div>
@@ -315,6 +315,8 @@ if (IS_DEPLOYED) {
   rmSync(join(out, "deployed-1600x900.png"), { force: true });
   console.log("nothing is deployed in toollpad.config.json, so the card that prints the addresses is not rendered");
 }
+
+for (const sheet of sheets) refuseIdentityOnArt(sheet.name, sheet.html, { fonts: FONTS });
 
 await shoot(sheets, out);
 

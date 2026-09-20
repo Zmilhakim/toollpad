@@ -4,9 +4,7 @@ Everything here is generated. Edit the source, re-run, commit the output.
 
 ```bash
 npm install          # sharp + playwright
-npm run render         # the launchpad's own kit, into out/
-npm run render:token   # the art for every token in ../tokens
-node token.mjs lane-one   # just that one
+npm run render       # into out/
 ```
 
 Playwright needs its Chromium: `npx playwright install chromium`, unless the
@@ -26,19 +24,17 @@ finds it).
 | `toll-1600x900.png` | The fee schedule, as one card |
 | `deployed-1600x900.png` | Where Toollpad is on chain — only exists while it is deployed |
 
-## The tokens launched through it
+## A token's own art is not here
 
-`token.mjs` renders a mark, an avatar, a banner and a link preview for each
-folder in [`../tokens`](../tokens), from that token's own `token.json` and
-`art.mjs`. The pieces both renderers share live in `lib/`: `pixels.mjs` turns a
-grid into an SVG, `rates.mjs` reads the figures out of the contracts, and
-`sheets.mjs` inlines the webfonts and drives the browser that screenshots a
-layout — including the two checks that keep a bad picture from shipping quietly,
-that every face applied and that nothing overflowed the canvas.
+A token launched through Toollpad is not part of Toollpad, so its mark, its
+banner and its link preview live in its repository rather than this one — the
+first is [lane-one](https://github.com/Zmilhakim/lane-one), which carries a copy
+of `lib/pixels.mjs` and `lib/sheets.mjs` and draws its own lane.
 
-A token's art follows the same rule as this kit: no handle and no domain on any
-image. `token.mjs` checks each sheet for both and throws, which is the difference
-between a rule and a preference.
+What this kit keeps is the launchpad's own: `lib/pixels.mjs` turns a grid into an
+SVG, `lib/rates.mjs` reads the figures out of the contracts, and `lib/sheets.mjs`
+inlines the webfonts, drives the browser that screenshots a layout, and refuses a
+sheet that prints a handle or a domain.
 
 ## The X account
 
@@ -74,8 +70,7 @@ barrier.
 ## The numbers on the cards are checked against the contracts
 
 `lib/rates.mjs` reads `TOLL_BPS`, `CREATOR_BPS`, `LP_FEE` and `FIXED_SUPPLY` out
-of `../contracts/src/` and throws if they are not what the copy says — for this
-kit and for every token's art, which is the point of it being one file. It also
+of `../contracts/src/` and throws if they are not what the copy says. It also
 greps `TollLocker.sol` for a `withdraw`, a `collect`, a `rescue` or a negative
 liquidity delta, and throws if it finds one.
 
@@ -90,6 +85,14 @@ the stale card rather than leaving one in `out/` looking current.
 
 ## No domain on the art
 
-Nothing here prints a domain or a handle, on purpose. See
-[`X-PROFILE.md`](X-PROFILE.md#what-the-art-deliberately-does-not-say) for why
-that is a rule in this repository rather than a preference.
+Nothing here prints a domain or a handle, and that is checked rather than
+remembered: `refuseIdentityOnArt` in `lib/sheets.mjs` scans every sheet before it
+is screenshotted and throws if it finds either. The rule had already been broken
+once by a card printing `TOOLLPAD.FUN` in its footer — which is exactly the kind
+of thing a rule nobody checks is for. See
+[`X-PROFILE.md`](X-PROFILE.md#what-the-art-deliberately-does-not-say) for why it
+is a rule here rather than a preference.
+
+A domain is the worse of the two. A handle can at least be registered; a domain
+survives a move between hosts, so a card printing one goes on pointing wherever
+that name points long after the project has left it.

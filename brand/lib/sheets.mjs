@@ -62,6 +62,29 @@ export async function inlineFonts() {
 }
 
 /**
+ * Nothing that is not yet somebody's goes onto an image.
+ *
+ * No handle and no domain on any art. X shows both in its own chrome, an image
+ * repeating them is one more thing that can go stale, and a handle printed
+ * before it is registered is an invitation to whoever registers it next. A
+ * domain is worse: it survives a move between hosts, so a card printing one goes
+ * on pointing wherever that name points long after the project has left.
+ *
+ * Checked rather than remembered — see brand/X-PROFILE.md for the incident that
+ * made it a rule. `fonts` is stripped first: the inlined webfaces carry URLs of
+ * their own and are not the picture.
+ */
+export function refuseIdentityOnArt(name, html, { fonts = "", handle = "" } = {}) {
+  const art = fonts ? html.split(fonts).join("") : html;
+  const found = [handle, ...(art.match(/\b[a-z0-9-]+\.(?:fun|com|xyz|io|app|eth)\b/gi) ?? [])].filter(
+    (needle) => needle && art.includes(needle),
+  );
+  if (found.length > 0) {
+    throw new Error(`${name}: art must not print a handle or a domain — found ${[...new Set(found)].join(", ")}`);
+  }
+}
+
+/**
  * Screenshots each sheet into `outDir`, one PNG per entry.
  *
  * Two checks stand between a render and a picture nobody looks at twice: that

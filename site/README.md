@@ -67,15 +67,22 @@ far as a launchpad can honestly go.
 
 ## Deployed
 
-Live at **https://toollpad.fun**, from `main`.
+Live at **https://toollpad.vercel.app**, from `main`.
 
 | | |
 | --- | --- |
 | Vercel project | `toollpad`, in `zmilhakim-4557` |
 | Root directory | `site` |
 | Production branch | `main` — every push deploys |
-| Domains | `toollpad.fun`, `www.toollpad.fun` |
+| Domain | `toollpad.vercel.app` |
 | Protection | Vercel Authentication on previews only; production is public |
+
+**`toollpad.fun` is registered and does not point here.** It is attached to an
+older Vercel project — `tollpad`, one `o`, built from the `Hood-asset`
+repository, from before this one was split out — so the domain serves that
+project's build and not this one. Moving it is two clicks in the Vercel
+dashboard: remove it there, add it here. Until that happens, the address above is
+the site's real address, and nothing in this repository should claim otherwise.
 
 What is still unset, on purpose: `NEXT_PUBLIC_FACTORY_ADDRESS`. There are no
 contracts on Robinhood Chain yet, so the live site says so on every page. Deploy
@@ -85,6 +92,7 @@ environment, and redeploy — the pages turn on with no code change.
 Set `NEXT_PUBLIC_RPC_URL` before this sees any real traffic. The default endpoint
 is Robinhood's public one and is rate-limited for wallets, not for a site.
 
-`SITE_URL` follows `VERCEL_PROJECT_PRODUCTION_URL`, which is the custom domain
-once one is attached — so the OG tags point at `toollpad.fun` by themselves. Set
-`NEXT_PUBLIC_SITE_URL` only if it ever needs to differ from that.
+`SITE_URL` follows `VERCEL_PROJECT_PRODUCTION_URL`, which is whatever this
+project's production hostname is — `toollpad.vercel.app` today, and the custom
+domain by itself on the day one is attached here. Set `NEXT_PUBLIC_SITE_URL` only
+if it ever needs to differ from that.
