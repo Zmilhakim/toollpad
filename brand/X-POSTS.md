@@ -128,7 +128,7 @@ Two other first posts, same thread underneath. Pick one — don't post two.
 >
 > Yang ada: 4% tiap swap, 80%-nya ke yang nge-launch.
 >
-> Toollpad. Board-nya kosong.
+> Toollpad. Notice #0 udah naik.
 
 **The one that leads with the cost, which is the honest thing to lead with:**
 
