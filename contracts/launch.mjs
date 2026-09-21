@@ -80,7 +80,8 @@ const params = {
 console.log(`factory    ${factory}`);
 console.log(`creator    ${account.address}`);
 if (written) console.log(`written    ${written.path}`);
-console.log(`balance    ${formatEther(await publicClient.getBalance({ address: account.address }))} ETH`);
+const balance = await publicClient.getBalance({ address: account.address });
+console.log(`balance    ${formatEther(balance)} ETH`);
 console.log(`\ntoken      ${params.name} ($${params.symbol})`);
 console.log(`supply     1,000,000,000 — all of it into the pool, none to anyone`);
 console.log(`range      ${floorEth} ETH at the floor, ${ceilEth} ETH at the ceiling (whole supply)`);
@@ -118,6 +119,48 @@ const { request, result } = await publicClient
 
 const [, token] = result;
 console.log(`\nwould deploy the token at ${token}`);
+
+/**
+ * Whether this account can actually pay for the transaction it just simulated.
+ *
+ * The simulation above proves the call does not revert, and proves nothing about
+ * gas: `eth_call` runs without charging for it. A launch deploys an ERC-20,
+ * initialises a v4 pool and mints the whole supply into the locker in one
+ * transaction, which is a lot of gas to discover you cannot afford from a
+ * receipt — the gas up to the failure is spent either way.
+ *
+ * Estimating can fail for its own reasons, and a node that refuses to estimate
+ * is not evidence the launch is unaffordable. So this blocks only on numbers it
+ * actually has, and otherwise says it could not tell.
+ */
+const estimate = await publicClient
+  .estimateContractGas({ address: factory, abi: factoryArtifact.abi, functionName: "launch", args: [params], account })
+  .then(async (gas) => ({ gas, gasPrice: await publicClient.getGasPrice() }))
+  .catch((error) => ({ error }));
+
+if (estimate.error) {
+  console.log(`\ngas        could not be estimated — ${estimate.error.shortMessage ?? estimate.error.message}`);
+  console.log(`           the simulation passed, so this is about the node, not the launch`);
+} else {
+  // Gas is estimated, not fixed, and the price moves between now and the send.
+  // A launch that only just fits is a launch that fails on a busy block.
+  const cost = estimate.gas * estimate.gasPrice;
+  console.log(`\ngas        ${estimate.gas} at ${formatEther(estimate.gasPrice)} ETH — about ${formatEther(cost)} ETH`);
+
+  if (balance < cost) {
+    fail(
+      `not enough ETH: the launch costs about ${formatEther(cost)} and this account holds ${formatEther(balance)}.`,
+      `Short by roughly ${formatEther(cost - balance)} ETH, before any headroom.`,
+      "",
+      `Top up ${account.address} and run this again.`,
+    );
+  }
+
+  const headroom = (cost * 25n) / 100n;
+  if (balance < cost + headroom) {
+    console.log(`           this fits, but only just — a busier block than this one would not`);
+  }
+}
 
 if (process.env.CONFIRM !== "launch") {
   console.log(`\nNothing was sent. To send it:\n`);
