@@ -20,16 +20,24 @@ npm run build
 | `/dashboard` | What this address launched, and the toll it is owed |
 | `/learn` | The mechanism, and the parts worth being clear-eyed about |
 
-## It works before anything is deployed
+## Where the factory address comes from
 
-`NEXT_PUBLIC_FACTORY_ADDRESS` is empty, so the site builds and runs and says on
-every page that nothing is deployed yet. That is deliberate: a board of zeros
-looks exactly like a board nobody has used, and the difference matters. Set the
-address — after `npm run deploy` in `../contracts` — and every page turns on.
+`DEPLOYED_FACTORY` in `src/lib/contracts.ts` holds it, and it is filled in: the
+site reads the 4% launchpad at `0x84834C83…75528fdF`. It lives in the source
+rather than only in a dashboard variable because a build that forgets a variable
+does not fail — it quietly serves a page telling visitors the launchpad does not
+exist.
+
+`NEXT_PUBLIC_FACTORY_ADDRESS` still overrides it, which is how a preview build
+points at a different deployment without a commit:
 
 ```bash
 cp .env.example .env.local
 ```
+
+With neither set, the site still builds and runs, and says on every page that
+nothing is deployed rather than rendering a board of zeros — which looks exactly
+like a board nobody has used, and the difference matters.
 
 ## The ABIs are generated, not copied
 
