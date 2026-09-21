@@ -139,6 +139,67 @@ Two other first posts, same thread underneath. Pick one — don't post two.
 >
 > Angkanya nggak bisa diubah, jadi lu tau persis lagi milih apa.
 
+## The CA post
+
+The one post where being wrong costs somebody money. A contract address is 42
+characters nobody reads, everybody copies, and a reply can counterfeit — which is
+how most people lose money on a launch, not on the chart. So the post's job is
+not to show the address. It is to hand over a way of checking it that does not
+require trusting the post.
+
+That way exists here and costs nothing to say: the board on toollpad.fun is read
+from the factory on chain. An address that is not on it was not launched by this
+launchpad, whoever posted it and however confident they sounded.
+
+**Indonesian** (278 characters):
+
+> $TOLL — notice #0 di Toollpad.
+>
+> CA: 0x3fb9cFA3Ec4D10308B40Bc82F8eBA42cA192E574
+>
+> Jangan percaya CA dari reply, punya gua termasuk. Buka toollpad.fun, board-nya
+> baca langsung dari factory. Yang nggak muncul di situ, bukan ini.
+>
+> Deployer: 0xF914569f6207Bd87f8568b770eC7166788fD7B72
+
+**English** (269 characters):
+
+> $TOLL — notice #0 on Toollpad.
+>
+> CA: 0x3fb9cFA3Ec4D10308B40Bc82F8eBA42cA192E574
+>
+> Don't trust a CA from a reply, mine included. Open toollpad.fun — the board
+> reads it off the factory. Anything not on there isn't this.
+>
+> Deployer: 0xF914569f6207Bd87f8568b770eC7166788fD7B72
+
+*Image: `out/deployed-1600x900.png`, which carries the launchpad's three
+addresses and the deployer. Post it here rather than earlier if this is the
+first post on the account: one image, everything checkable.*
+
+### Shorter, if the thread already explained the rest
+
+> CA $TOLL:
+> 0x3fb9cFA3Ec4D10308B40Bc82F8eBA42cA192E574
+>
+> Cara mastiin itu bener tanpa percaya postingan ini: buka toollpad.fun.
+> Board-nya baca dari factory on chain. Notice #0.
+>
+> Deployer: 0xF914569f6207Bd87f8568b770eC7166788fD7B72
+
+### Pin this one
+
+A CA post scrolls away within the hour and the impersonations do not. Pinning it
+means the profile answers the question without anyone having to ask, and the
+answer is the same one every time somebody checks.
+
+### The reply to every fake CA
+
+Do not argue with it. Post the check, once, and let it be the standing answer:
+
+> Board-nya di toollpad.fun, dibaca langsung dari factory on chain. Kalau sebuah
+> CA nggak ada di situ, dia bukan dari Toollpad — siapa pun yang posting.
+
 ## The pinned one
 
 > Toollpad is a launchpad where the fee is the product.
