@@ -173,6 +173,14 @@ launchpad, whoever posted it and however confident they sounded.
 >
 > Deployer: 0xF914569f6207Bd87f8568b770eC7166788fD7B72
 
+> **Before posting either of these again:** they name `$TOLL` and the launchpad
+> it launched on, and that launchpad is superseded — the treasury moved, so the
+> board this repository describes is a new deployment that is not on chain yet.
+> `$TOLL` and its pool stay where they are and nothing about them changes, but
+> "open toollpad.fun, the board reads it off the factory" stops being true for
+> `$TOLL` the moment the site points at the new factory. Post it as what it is —
+> a token on the earlier board — or not at all.
+
 *Image: `out/deployed-1600x900.png`, which carries the launchpad's three
 addresses and the deployer. Post it here rather than earlier if this is the
 first post on the account: one image, everything checkable.*

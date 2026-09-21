@@ -2,21 +2,30 @@
   "$comment": "Addresses are public. Private keys never go in this file, or any file in this repo.",
   "chainId": 4663,
   "poolManager": "0x8366a39CC670B4001A1121B8F6A443A643e40951",
-  "treasury": "0xb1A81E4A729c87560eF12d7652D883e803C5422E",
-  "deployer": "0xF914569f6207Bd87f8568b770eC7166788fD7B72",
+  "treasury": "0xE2300F8BE973C9D17D63d3aF1ac003a559105FCC",
+  "deployer": "0xDD6eC911F99C5C468632570e028023B875065453",
   "launch": {
     "tickSpacing": 200,
     "floorEth": "1.7",
     "ceilEth": "170"
   },
-  "deployed": {
-    "factory": "0x84834C830E90B11b583ded93d16c09f675528fdF",
-    "hook": "0xC2C317b0234E2C2805289154649bcfA1126Ea0cC",
-    "locker": "0xEd261a7eA22685a01bB93A2433196ADbdd4e6540",
-    "hookSalt": "0x0000000000000000000000000000000000000000000000000000000000002e2e",
-    "deployTx": "0x5fb7e09a911b35f22b35c760fd1012713d8d74af67fa4b11337656f135812172"
-  },
+  "deployed": {},
   "superseded": [
+    {
+      "why": "the treasury is an immutable in the hook and it moved; a different treasury is a different hook, and a different hook is a different pool",
+      "tollBps": 400,
+      "creatorBps": 8000,
+      "treasury": "0xb1A81E4A729c87560eF12d7652D883e803C5422E",
+      "deployer": "0xF914569f6207Bd87f8568b770eC7166788fD7B72",
+      "deployedAt": "2026-09-20",
+      "launches": 1,
+      "holds": "notice #0, $TOLL at 0x3fb9cFA3Ec4D10308B40Bc82F8eBA42cA192E574 — that pool stays here and goes on paying the two addresses above",
+      "factory": "0x84834C830E90B11b583ded93d16c09f675528fdF",
+      "hook": "0xC2C317b0234E2C2805289154649bcfA1126Ea0cC",
+      "locker": "0xEd261a7eA22685a01bB93A2433196ADbdd4e6540",
+      "deployTx": "0x5fb7e09a911b35f22b35c760fd1012713d8d74af67fa4b11337656f135812172",
+      "hookSalt": "0x0000000000000000000000000000000000000000000000000000000000002e2e"
+    },
     {
       "why": "charged a 5% toll; TOLL_BPS is a constant, so 4% is a different hook and a different deployment",
       "tollBps": 500,

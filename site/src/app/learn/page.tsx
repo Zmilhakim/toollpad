@@ -59,29 +59,48 @@ export default function LearnPage() {
         ))}
       </div>
 
-      <Panel label="There is an older Toollpad on chain">
+      <Panel label="There are older Toollpads on chain">
         <p className="text-sm leading-relaxed text-lane-soft">
-          An earlier deployment charged {SUPERSEDED.tollBps / 100}% and went on chain on {SUPERSEDED.deployedOn}. Its
-          factory is{" "}
-          <a
-            className="text-lane underline decoration-signal/50 underline-offset-4 hover:text-signal"
-            href={explorerAddress(SUPERSEDED.factory)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {shortAddress(SUPERSEDED.factory)}
-          </a>
-          , and it is not this one.
+          Two of them. Both are verified, both say Toollpad, and both are still open to anybody — a launch into either
+          would work and would charge the rate it was built with. Only one launchpad is the one this site is about, and
+          the way to tell is the address.
         </p>
-        <p className="mt-3 text-sm leading-relaxed text-lane-soft">
-          The rate is a <code className="text-signal">constant</code> with no setter — that is the whole of what the
-          rate promises — so changing it to {TOLL_BPS / 100}% was not a transaction anybody could send. It meant
-          deploying all three contracts again. Nothing was stranded: the old board was never posted to, so there is no
-          token, no pool and no liquidity on it.
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-lane-soft">
-          It is still there, because nothing can remove a contract, and it is still open to anybody — a launch into it
-          would work and would charge the old rate.{" "}
+
+        <ul className="mt-4 space-y-3">
+          {SUPERSEDED.map((old) => (
+            <li key={old.factory} className="border-2 border-lane-faint/30 bg-ground-lift p-3">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="micro font-semibold text-signal">{old.tollBps / 100}% toll</span>
+                <a
+                  className="text-sm text-lane underline decoration-signal/50 underline-offset-4 hover:text-signal"
+                  href={explorerAddress(old.factory)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {shortAddress(old.factory)}
+                </a>
+                <span className="micro text-lane-faint">{old.deployedOn}</span>
+              </div>
+              <p className="mt-1.5 text-sm leading-relaxed text-lane-soft">
+                Replaced because {old.why}.{" "}
+                {old.holds ? (
+                  <>
+                    <strong className="text-lane">It is not empty:</strong> it holds {old.holds}. A hook is part of a
+                    pool&rsquo;s key, so a pool belongs to the launchpad it opened on and cannot be moved to this one.
+                  </>
+                ) : (
+                  <>It was never posted to — no token, no pool, no liquidity, nobody owed anything.</>
+                )}
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        <p className="mt-4 text-sm leading-relaxed text-lane-soft">
+          Neither rate nor treasury is a setting: both are fixed at deployment, one a{" "}
+          <code className="text-signal">constant</code> and the other an <code className="text-signal">immutable</code>,
+          neither with a setter. That is the whole of what they promise — and the price of it is that changing either
+          means deploying all three contracts again rather than sending a transaction.{" "}
           {FACTORY_ADDRESS ? (
             <>
               The factory this site uses is{" "}

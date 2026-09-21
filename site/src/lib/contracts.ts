@@ -23,7 +23,7 @@ export { toollpadFactoryAbi, tollHookAbi, tollLockerAbi, tollTokenAbi };
  * This must match `deployed.factory` in ../contracts/toollpad.config.json —
  * that file is the record, this is the copy the browser gets.
  */
-const DEPLOYED_FACTORY = "0x84834C830E90B11b583ded93d16c09f675528fdF";
+const DEPLOYED_FACTORY = "";
 
 const configured = process.env.NEXT_PUBLIC_FACTORY_ADDRESS?.trim() || DEPLOYED_FACTORY;
 
@@ -58,20 +58,34 @@ export const LAUNCH_TICK_SPACING = 200;
 export const TICKER = "TOLL";
 
 /**
- * The deployment this one replaced.
+ * The deployments this one replaces. Newest first.
  *
- * It charged 5%, was never posted to, and is still on chain — nothing can remove
- * a contract. It is also still permissionless, so a launch into it would work
- * and would charge the old rate. Naming it here is the only way a reader who
- * found it on the explorer can tell which of the two is this launchpad: both are
- * verified, both say Toollpad, and only one of them is what this site talks
- * about.
+ * Both are still on chain — nothing removes a contract — both are verified, both
+ * say Toollpad, and both are still permissionless: a launch into either would
+ * work and would charge the rate that deployment was built with. Naming them is
+ * the only way a reader who found one on an explorer can tell which is which.
+ *
+ * `holds` is the part that matters. The 5% one was never posted to, so there is
+ * nothing on it. The 4% one carries notice #0 — $TOLL — and that pool cannot be
+ * moved: a hook is part of a pool's key, so the pool belongs to the launchpad it
+ * opened on, and its tolls go on paying the addresses that deployment names.
  */
-export const SUPERSEDED = {
-  factory: "0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6" as Address,
-  tollBps: 500,
-  deployedOn: "19 September 2026",
-} as const;
+export const SUPERSEDED = [
+  {
+    factory: "0x84834C830E90B11b583ded93d16c09f675528fdF" as Address,
+    tollBps: 400,
+    deployedOn: "20 September 2026",
+    why: "the treasury is an immutable in the hook, and it moved",
+    holds: "notice #0, $TOLL — that pool stays there, and its tolls stay with it",
+  },
+  {
+    factory: "0x8f61c8d12f7f3135c1202dfDd113F2B37c6A7fd6" as Address,
+    tollBps: 500,
+    deployedOn: "19 September 2026",
+    why: "the toll was lowered to 4%, and the rate is a constant",
+    holds: null,
+  },
+] as const;
 
 export type Notice = {
   id: bigint;
