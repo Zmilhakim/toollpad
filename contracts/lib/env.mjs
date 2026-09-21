@@ -57,6 +57,22 @@ export function requireDeployerKey() {
     );
   }
 
+  // 42 characters of hex is an address, and pasting one here is the easy
+  // mistake to make: the address is the value this project prints everywhere —
+  // in the README, on the cards, on the explorer — so it is the one already on
+  // the clipboard. Saying only that 42 is not 66 leaves the reader counting
+  // characters; naming what they actually pasted ends it in one line.
+  if (/^0x[0-9a-fA-F]{40}$/.test(rawKey)) {
+    fail(
+      "DEPLOYER_KEY is an address, not a private key.",
+      "",
+      "An address is 0x + 40 hex and is public — this one is in the README. A",
+      "private key is 0x + 64 hex and is not. In MetaMask:",
+      "  address     -> the name at the top of the account, which copies it",
+      "  private key -> the three dots next to the account > Account details > Show private key",
+    );
+  }
+
   if (!/^0x[0-9a-fA-F]{64}$/.test(rawKey)) {
     fail(
       `DEPLOYER_KEY is ${rawKey.length} characters; a private key is exactly 66 (0x + 64 hex).`,
