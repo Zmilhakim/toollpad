@@ -179,11 +179,23 @@ first post on the account: one image, everything checkable.*
 
 ### Shorter, if the thread already explained the rest
 
+**Indonesian** (227 characters):
+
 > CA $TOLL:
 > 0x3fb9cFA3Ec4D10308B40Bc82F8eBA42cA192E574
 >
 > Cara mastiin itu bener tanpa percaya postingan ini: buka toollpad.fun.
 > Board-nya baca dari factory on chain. Notice #0.
+>
+> Deployer: 0xF914569f6207Bd87f8568b770eC7166788fD7B72
+
+**English** (228 characters):
+
+> $TOLL CA:
+> 0x3fb9cFA3Ec4D10308B40Bc82F8eBA42cA192E574
+>
+> How to check that without trusting this post: open toollpad.fun. The board
+> reads it off the factory on chain. Notice #0.
 >
 > Deployer: 0xF914569f6207Bd87f8568b770eC7166788fD7B72
 
@@ -197,8 +209,15 @@ answer is the same one every time somebody checks.
 
 Do not argue with it. Post the check, once, and let it be the standing answer:
 
+**Indonesian:**
+
 > Board-nya di toollpad.fun, dibaca langsung dari factory on chain. Kalau sebuah
 > CA nggak ada di situ, dia bukan dari Toollpad — siapa pun yang posting.
+
+**English:**
+
+> The board at toollpad.fun reads its addresses off the factory on chain. A CA
+> that is not on it was not launched here, whoever posted it.
 
 ## The pinned one
 
