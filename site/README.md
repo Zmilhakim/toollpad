@@ -22,12 +22,10 @@ npm run build
 
 ## Where the factory address comes from
 
-`DEPLOYED_FACTORY` in `src/lib/contracts.ts` holds it, and it is **empty again**:
-the 4% launchpad it used to name is superseded — the treasury moved, which is a
-new hook and a new deployment — and the replacement is not on chain yet. So the
-site says on every page that nothing is deployed, which is true, and `/learn`
-names the two older deployments so a reader who finds one on an explorer can tell
-which is which.
+`DEPLOYED_FACTORY` in `src/lib/contracts.ts` holds it, and it is filled in: the
+site reads the launchpad at `0xA5d97e5E…03aee5F9A`, the one whose treasury is
+`0xE2300F8B…59105FCC`. Two earlier deployments are named in `SUPERSEDED` and on
+`/learn`, because both are still on chain and one of them holds a token.
 
 It lives in the source rather than only in a dashboard variable because a build
 that forgets a variable does not fail — it quietly serves a page telling visitors

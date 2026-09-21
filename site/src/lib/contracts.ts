@@ -23,7 +23,7 @@ export { toollpadFactoryAbi, tollHookAbi, tollLockerAbi, tollTokenAbi };
  * This must match `deployed.factory` in ../contracts/toollpad.config.json —
  * that file is the record, this is the copy the browser gets.
  */
-const DEPLOYED_FACTORY = "";
+const DEPLOYED_FACTORY = "0xA5d97e5E1ceBfb35c5dBE23e0514cCA03aee5F9A";
 
 const configured = process.env.NEXT_PUBLIC_FACTORY_ADDRESS?.trim() || DEPLOYED_FACTORY;
 

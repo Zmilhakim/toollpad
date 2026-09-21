@@ -285,28 +285,34 @@ mined wrong does not fail loudly.
 The EVM has to be Cancun or later: v4 keeps its lock and its deltas in transient
 storage.
 
-## Not deployed — the treasury moved
+## Deployed
 
-Nothing under this config is on chain. `deployed` is empty, and the two
-deployments that came before it are in `superseded`, which is where they stay:
-nothing removes a contract.
+Toollpad is on Robinhood Chain (4663), charging a toll of **4%**, with the
+treasury at `0xE2300F8BE973C9D17D63d3aF1ac003a559105FCC`. All three contracts
+went on chain in one transaction,
+`0x150ab2449a1a2cb7aaef9d678b300b4d3c0ee5b573ab4cf5dc1dd85af92ac3a0`:
 
-**Why there is a third one coming.** The treasury is an `immutable` in the hook,
-written at deployment, with no setter under any spelling. Moving it is not a
-transaction anybody can send — it is a different hook, and since a hook is part
-of a pool's key, a different hook is a different pool. The same argument that
-made 5% → 4% a redeploy makes this one.
+| Contract | Address |
+| --- | --- |
+| `ToollpadFactory` | [`0xA5d97e5E…03aee5F9A`](https://robinhoodchain.blockscout.com/address/0xA5d97e5E1ceBfb35c5dBE23e0514cCA03aee5F9A?tab=contract) |
+| `TollHook` | [`0x1C946F2C…Bbda60CC`](https://robinhoodchain.blockscout.com/address/0x1C946F2C98D91087dF5CD2415550294FBbda60CC?tab=contract) |
+| `TollLocker` | [`0x9a271a0A…35332D3c`](https://robinhoodchain.blockscout.com/address/0x9a271a0A8CA6F8eE56DE3cE990bD44ee35332D3c?tab=contract) |
+
+Deployed from `0xDD6eC911F99C5C468632570e028023B875065453` at nonce 0. The
+hook's low 14 bits are `0x20cc` — the five callbacks it implements and nothing
+else, readable off the address itself. `deploy.mjs` read the treasury back out of
+the hook before it printed anything: it is an `immutable`, and it is the address
+above.
+
+**All four figures reproduce from the source in this repository.** The deployer
+and its nonce give the factory; the factory and the salt give the hook; the salt
+was re-mined from `TollHook`'s creation code with this pool manager and this
+treasury and came back identical. So the code here is the code on chain, and that
+is checkable without trusting either end:
 
 ```bash
-npm run mine     # the salt for the new hook — the old ones were mined against other treasuries
-npm run deploy   # factory, hook and locker, from 0xDD6eC911F99C5C468632570e028023B875065453
-npm run verify   # publish the source of the three that now matter
+NONCE=0 npm run mine   # prints the same factory, hook and salt
 ```
-
-The deployer is new as well, so the salt has to be mined against it: a hook's
-address is a hash of the factory that creates it, and the factory's address is a
-hash of the deployer and its nonce. `deploy.mjs` mines it itself and refuses to
-send if `DEPLOYER_KEY` controls a different address than the config names.
 
 ### The 4% deployment this replaces
 

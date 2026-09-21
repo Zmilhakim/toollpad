@@ -9,7 +9,13 @@
     "floorEth": "1.7",
     "ceilEth": "170"
   },
-  "deployed": {},
+  "deployed": {
+    "factory": "0xA5d97e5E1ceBfb35c5dBE23e0514cCA03aee5F9A",
+    "hook": "0x1C946F2C98D91087dF5CD2415550294FBbda60CC",
+    "locker": "0x9a271a0A8CA6F8eE56DE3cE990bD44ee35332D3c",
+    "hookSalt": "0x0000000000000000000000000000000000000000000000000000000000013d52",
+    "deployTx": "0x150ab2449a1a2cb7aaef9d678b300b4d3c0ee5b573ab4cf5dc1dd85af92ac3a0"
+  },
   "superseded": [
     {
       "why": "the treasury is an immutable in the hook and it moved; a different treasury is a different hook, and a different hook is a different pool",
