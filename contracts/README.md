@@ -312,7 +312,23 @@ repository before the transaction was sent, and matched. That is worth more than
 it sounds: it means the code here is the code on chain, provable without trusting
 either end.
 
-**The board is empty.** Deploying put the machine on chain and launched nothing.
+### The first notice
+
+Notice **#0** is `$TOLL`, [`0x3fb9cFA3…cA192E574`](https://robinhoodchain.blockscout.com/address/0x3fb9cFA3Ec4D10308B40Bc82F8eBA42cA192E574?tab=contract),
+launched on 2026-09-21 in transaction
+`0xa3483e6bd7274c52d87bf14…46b13` by the same address that deployed the
+launchpad.
+
+It took the deal every other launch takes, which is the only thing worth saying
+about it: the whole supply went into the pool and none of it anywhere else, the
+liquidity sits in the locker, and the pool charges the same 4%. There is no
+founder allocation because the factory has nowhere to put one — `launch` mints
+the fixed supply straight into the position and keeps nothing back, and that is
+readable in `ToollpadFactory.sol` rather than promised here.
+
+The position opened holding 999,999,999 tokens rather than the round billion:
+liquidity is computed from the range and the amounts are derived back from it,
+so the last token rounds off. It is dust, and it is dust nobody can retrieve.
 
 ### The 5% deployment this replaced
 

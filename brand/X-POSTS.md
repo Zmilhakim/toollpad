@@ -47,26 +47,31 @@ itself.
 >
 > 4% of every swap, 80% to whoever launched it.
 
-### Post 2 — the board is empty
+### Post 2 — the first token got no better deal
+
+An earlier draft of this post said the board was empty, which was true until
+notice #0 went up on 2026-09-21. Saying it now would be a lie about something
+anyone can open the board and check in five seconds, so the claim moved to the
+one that survived the launch: the first token took the same terms as the next
+one, because the factory cannot offer any other terms.
 
 **Indonesian:**
 
-> Board-nya masih kosong.
+> Token pertama di board ini punya gua. Dan dia nggak dapet apa-apa yang beda.
 >
-> Gua deploy launchpad-nya dan nggak nge-launch token apa pun di situ. Nggak ada
-> token pertama punya gua, nggak ada presale, nggak ada alokasi yang nunggu
-> unlock.
+> Nggak ada presale, nggak ada jatah gua, nggak ada unlock. Semua supply masuk
+> pool, likuiditasnya di locker, toll 4% — sama kayak token lu nanti.
 >
-> Yang pertama posting, ya yang pertama posting.
+> Factory-nya emang nggak punya tempat buat naro alokasi.
 
 **English:**
 
-> The board is empty.
+> The first token on this board is mine. It got nothing yours won't.
 >
-> I deployed the launchpad and launched nothing on it. No first token of mine, no
-> presale, no allocation waiting on an unlock.
+> No presale, no share for me, no unlock. The whole supply went into the pool,
+> the liquidity is in the locker, the toll is 4%.
 >
-> Whoever posts first, posts first.
+> The factory has nowhere to put an allocation.
 
 ### Post 3 — why the rate cannot move
 
